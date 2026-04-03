@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WIN26AW1 — Winners Report</title>
+<title>WIN26APW1 — IM8 Winners Report</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root{--bg:#0a0a0f;--surface:#111118;--surface2:#18181f;--border:rgba(255,255,255,0.07);--gold:#e8b450;--gold-dim:rgba(232,180,80,0.12);--teal:#3ecfb2;--teal-dim:rgba(62,207,178,0.1);--purple:#9b7cff;--purple-dim:rgba(155,124,255,0.1);--grey:#8888aa;--green:#4ade80;--amber:#fb923c;--white:#f0f0f8;--muted:#5a5a7a;--l1:#fb923c;--l2:#4ade80;--l3:#60a5fa;}
@@ -11,13 +11,15 @@
   body{background:var(--bg);color:var(--white);font-family:'DM Sans',sans-serif;font-weight:300;min-height:100vh;}
   body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:0.4;}
   .wrap{position:relative;z-index:1;max-width:1400px;margin:0 auto;padding:0 32px 80px;}
-  header{padding:56px 0 48px;border-bottom:1px solid var(--border);}
+  header{padding:56px 0 48px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:24px;flex-wrap:wrap;}
   .tag-chip{display:inline-flex;align-items:center;gap:8px;background:var(--gold-dim);border:1px solid var(--gold);border-radius:4px;padding:5px 14px;font-family:'DM Mono',monospace;font-size:11px;font-weight:500;color:var(--gold);letter-spacing:.12em;text-transform:uppercase;margin-bottom:20px;}
   .tag-chip::before{content:'';width:6px;height:6px;background:var(--gold);border-radius:50%;animation:pulse 2s infinite;}
   @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
   h1{font-family:'Syne',sans-serif;font-size:clamp(36px,5vw,62px);font-weight:800;letter-spacing:-.03em;line-height:1;}
   h1 span{color:var(--gold);}
   .week-label{margin-top:12px;font-size:13px;color:var(--muted);font-family:'DM Mono',monospace;}
+  .last-updated{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 16px;align-self:flex-end;}
+  .last-updated strong{color:var(--green);display:block;margin-bottom:2px;}
   .stats-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin:40px 0;}
   .stat{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px 18px;position:relative;overflow:hidden;animation:fadeUp .5s ease both;}
   .stat::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.5;}
@@ -68,11 +70,15 @@
   .done-btn:hover{border-color:var(--green);color:var(--green);}
   .done-btn.done{background:rgba(74,222,128,.1);border-color:var(--green);color:var(--green);}
   .card.done-card{opacity:.4;filter:grayscale(.5);}
-  .divider{display:flex;align-items:center;gap:12px;margin:24px 0 16px;}
+  .divider{display:flex;align-items:center;gap:12px;margin:24px 0 12px;}
   .divider-label{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;white-space:nowrap;}
   .divider-line{flex:1;height:1px;background:var(--border);}
   .chevron{width:20px;height:20px;display:flex;align-items:center;justify-content:center;margin-left:10px;flex-shrink:0;color:var(--muted);transition:transform .2s;}
   .card.open .chevron{transform:rotate(180deg);}
+  .empty-state{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:60px 40px;text-align:center;}
+  .empty-state .emoji{font-size:48px;margin-bottom:16px;display:block;}
+  .empty-state h3{font-family:'Syne',sans-serif;font-size:22px;font-weight:700;margin-bottom:8px;}
+  .empty-state p{font-size:13px;color:var(--muted);font-family:'DM Mono',monospace;line-height:1.6;}
   @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
   footer{margin-top:64px;padding-top:24px;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;}
   @media(max-width:900px){.stats-grid{grid-template-columns:repeat(3,1fr);} .card-metrics{display:none;}}
@@ -81,15 +87,21 @@
 <body>
 <div class="wrap">
   <header>
-    <div class="tag-chip">Weekly Winners Report</div>
-    <h1>Winners<br><span>WIN26AW1</span></h1>
-    <div class="week-label">27 Mar – 2 Apr 2026 &nbsp;·&nbsp; IM8 Health &nbsp;·&nbsp; Meta Ads</div>
+    <div>
+      <div class="tag-chip">Live Winners Report</div>
+      <h1>Winners<br><span>WIN26APW1</span></h1>
+      <div class="week-label">27 Mar – 3 Apr 2026 &nbsp;·&nbsp; IM8 Health &nbsp;·&nbsp; Meta Ads &nbsp;·&nbsp; L1 + ICP/Persona</div>
+    </div>
+    <div class="last-updated">
+      <strong>🟢 Auto-updated daily</strong>
+      Last run: 3 Apr 2026, 09:00 UTC
+    </div>
   </header>
   <div class="stats-grid" id="statsGrid"></div>
   <div class="legend">
     <div class="legend-item"><div class="legend-dot" style="background:var(--teal)"></div>KOL / Creator UGC — Duplicate to winner pool</div>
     <div class="legend-item"><div class="legend-dot" style="background:var(--gold)"></div>Generic/Static — Duplicate to winner pool</div>
-    <div class="legend-item"><div class="legend-dot" style="background:var(--purple)"></div>ICP/Persona — WIN26 tag only, stays in campaign</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--purple)"></div>ICP/Persona — WIN tag only, stays in campaign</div>
   </div>
   <div class="section-head">
     <h2>🏷 Action Needed</h2>
@@ -99,12 +111,12 @@
   </div>
   <div class="cards" id="actionCards"></div>
   <footer>
-    <span>Internal use only &nbsp;·&nbsp; WIN26AW1 &nbsp;·&nbsp; IM8 Health</span>
+    <span>Internal use only &nbsp;·&nbsp; WIN26APW1 &nbsp;·&nbsp; IM8 Health &nbsp;·&nbsp; Auto-generated via Meta API</span>
     <span id="footerDate"></span>
   </footer>
 </div>
 <script>
-const DATA = {"tag": "WIN26AW1", "week": "27 Mar \u2013 2 Apr 2026", "action": [{"name": "260309_IMG_NA_COLL_COLLAGEN_C6A_NER_NERMARW1_NA_NA_MYHAIRHA_NA_SKINLDP", "campaign": "L3 | 20260309_TOFU_GLOBAL_ASCCBO_AUTO_LC_ICP#2(MENOPAUSE)_MT*", "adset": "260309 Collagen Restorer ICP_ALT*", "type": "Static", "noteType": "icp", "note": "ICP/Persona \u2014 WIN26 tag only, stays in campaign", "tier": "L3", "spend": 1711.0, "roas": 1.2, "purchases": 11, "revenue": 2058.56, "cpa": 155.55, "hook": null, "hold": null, "ctr": 1.66, "url": "https://get.im8health.com/pages/skin-health"}, {"name": "260326_VID_VSL_GLP_MULTISUPP_1_INT_SPRINT1_NA_NA_NEWBESTFRIEND_NA_GLP1LDP*", "campaign": "L3 | 20260306_TOFU_GLOBAL_ASCCBO_AUTO_LC_ICP(GLP1)_MT*", "adset": "260317 GLP-1#2_ALT*", "type": "Video", "noteType": "icp", "note": "ICP/Persona \u2014 WIN26 tag only, stays in campaign", "tier": "L3", "spend": 3348.48, "roas": 1.07, "purchases": 14, "revenue": 3586.21, "cpa": 239.18, "hook": 24.4, "hold": 6.9, "ctr": 6.09, "url": "https://get.im8health.com/pages/glp1"}, {"name": "260326_VID_WOTXT_AGATH_RECOVERY_14_INT_SPRINT1_UGC_TYMCDONALD_TELLINGYOUSOMETHING_NA_GETRECOVERYACTLDP*", "campaign": "L1 | 20260319_TOFU_GLOBAL_CBO_AUTO_IR_VID#2 (Prenetics_MY_1)", "adset": "260326 Performance Focused Aging Athletes 2/2 > RECOVERY ACTIVE Lander_ALT*", "type": "Video", "noteType": "icp", "note": "ICP/Persona \u2014 WIN26 tag only, stays in campaign", "tier": "L1", "spend": 2372.0, "roas": 1.05, "purchases": 12, "revenue": 2486.8, "cpa": 197.67, "hook": 38.7, "hold": 3.6, "ctr": 4.75, "url": "https://get.im8health.com/recovery/active"}, {"name": "260326_VID_TALKH_GENE_EDUCATIONAL_3_INT_KOLUGC_KOL_BENGREENFIELD_MOSTPEOPLEDONT_PTAD_WHYIM8LDP*", "campaign": "L1 | 20260319_TOFU_GLOBAL_CBO_AUTO_IR_VID#2 (Prenetics_MY_1)", "adset": "260326 KOLUGC 1/4", "type": "KOL UGC", "noteType": "kol", "note": "KOL UGC \u2014 duplicate to winner pool", "tier": "L1", "spend": 2362.68, "roas": 1.64, "purchases": 23, "revenue": 3863.6, "cpa": 102.73, "hook": 28.9, "hold": 3.7, "ctr": 0.84, "url": "https://get.im8health.com/pages/why-im8"}, {"name": "260331_VID_TALKH_BIOHK_CELLULARHEALTH_1_INT_KOLUGC_KOL_DUSTINPEDERSON_MOSTGUYSARESPENDING_PTAD_SCIENCELDP*", "campaign": "L1 | 20260320_TOFU_GLOBAL_CBO_AUTO_IR_VID#6 (Prenetics_MY_1)", "adset": "260331 KOLUGC 3/5", "type": "KOL UGC", "noteType": "kol", "note": "KOL UGC \u2014 duplicate to winner pool", "tier": "L1", "spend": 2604.5, "roas": 1.35, "purchases": 17, "revenue": 3505.29, "cpa": 153.21, "hook": 36.8, "hold": 8.0, "ctr": 3.34, "url": "https://get.im8health.com/pages/science"}], "stats": {"action_count": 5, "l1_count": 3, "icp_count": 2, "tagged_count": 49, "total_spend": 12398.66, "total_revenue": 15500.46, "avg_roas": 1.26, "total_purchases": 77}};
+const DATA = {"tag": "WIN26APW1", "week": "27 Mar \u2013 3 Apr 2026", "action": [{"ad_name": "260325_IMG_RVIEW_GENE_EDUCATIONAL_7_INT_IGPOST_SAB_DRJAMESDINIC_TESTOSTERONECHEAT_WTAD_16IN1JAMES*", "campaign_name": "L3 | 20260319_TOFU_GLOBAL_CBO_AUTO_7Dclick_IR_DRJAMES_LC_MT* (IM8-USD-01)", "adset_name": "260325 Dr James Dinic (IG Posts) - 16IN1DRJAMES", "spend": 1835.34, "roas": 2.65, "purchases": 19, "revenue": 4857.99, "cpa": 96.6, "ctr": 7.94, "hook": null, "hold": null, "url": "", "tier": "L3", "ad_type": "Static", "note": "Generic/Static \u2014 duplicate to winner pool", "note_type": "generic"}, {"ad_name": "IMG_C51D_BECKHAMSTACK_NA_NA_BRAND_THEBECKHAMSTACK_251121_NA_PDP(TBS) -WINNER(SCALEDOVER)", "campaign_name": "L2 | 20251121_TOFU_GLOBAL_ASCCBO_AUTO_LC(SCALE)", "adset_name": "251121 Longevity IMG Winners", "spend": 9018.36, "roas": 2.37, "purchases": 68, "revenue": 21382.47, "cpa": 132.62, "ctr": 0.73, "hook": null, "hold": null, "url": "", "tier": "L2", "ad_type": "Static", "note": "Generic/Static \u2014 duplicate to winner pool", "note_type": "generic"}, {"ad_name": "VID_9_KOLUGC_JACLYNSAVAGE_PAID_ALLINONE_AREYOUTAKING10DIFFERENT_260305_PTAD_WHATSMISSINGLDP", "campaign_name": "L3 | 20260305_TOFU_GLOBAL_ASC_AUTO_JACSAVAGEADVERTORIAL_LC", "adset_name": "New Sales ad set", "spend": 1413.6, "roas": 2.29, "purchases": 11, "revenue": 3236.95, "cpa": 128.51, "ctr": 4.49, "hook": null, "hold": null, "url": "", "tier": "L3", "ad_type": "KOL UGC", "note": "KOL UGC \u2014 duplicate to winner pool", "note_type": "kol"}, {"ad_name": "260316_VID_TALKH_GENBS_NEWFLAVORS_1_NA_KOLUGC_AMB_TINALONDCAULK_SOLOOKWHATSARRIVED_PTAD_ BKMFORMULALDP*", "campaign_name": "L3 | 20260319_TOFU_ROW_SUPERSCALER_ASC_AUTO_IR_WINNERS_LC_MT*", "adset_name": "TOP30 WINNERS", "spend": 1675.75, "roas": 2.03, "purchases": 14, "revenue": 3396.23, "cpa": 119.7, "ctr": 1.04, "hook": null, "hold": null, "url": "", "tier": "L3", "ad_type": "KOL UGC", "note": "KOL UGC \u2014 duplicate to winner pool", "note_type": "kol"}, {"ad_name": "VID_4_KOLUGC_JACLYNSAVAGE_PAID_COMP_QUESTIONSABOUTGREENSPOWDER_260305_PTAD_JACSAVAGEADVERTORIAL", "campaign_name": "L3 | 20260305_TOFU_GLOBAL_ASC_AUTO_JACSAVAGEADVERTORIAL_LC", "adset_name": "New Sales ad set", "spend": 2028.28, "roas": 2.0, "purchases": 15, "revenue": 4053.8, "cpa": 135.22, "ctr": 6.58, "hook": null, "hold": null, "url": "", "tier": "L3", "ad_type": "KOL UGC", "note": "KOL UGC \u2014 duplicate to winner pool", "note_type": "kol"}, {"ad_name": "IMG_C90A_WELCOMEKIT_NA_NA_WELCOMEKIT_CLAIMYOURKIT_260303_NA_GETPDP", "campaign_name": "L3 | 20260303_TOFU_GLOBAL_ASC_AUTO_GETPDP (NEW)(CLPT)_MT*", "adset_name": "260303 Top 50 L30D Winners > GET.PDP", "spend": 5164.16, "roas": 1.83, "purchases": 40, "revenue": 9454.83, "cpa": 129.1, "ctr": 1.35, "hook": null, "hold": null, "url": "", "tier": "L3", "ad_type": "Static", "note": "Generic/Static \u2014 duplicate to winner pool", "note_type": "generic"}, {"ad_name": "IMG_C132B_EXPLOSIVEPOWDERESSENTIAL_NA_NA_PERFORMANCE_LIMITEDTIME2026DEAL_260303_NA_GETPDP", "campaign_name": "L3 | 20260303_TOFU_GLOBAL_ASC_AUTO_GETPDP (NEW)(CLPT)_MT*", "adset_name": "260303 Top 50 L30D Winners > GET.PDP", "spend": 3973.79, "roas": 1.73, "purchases": 25, "revenue": 6866.23, "cpa": 158.95, "ctr": 0.78, "hook": null, "hold": null, "url": "", "tier": "L3", "ad_type": "Static", "note": "Generic/Static \u2014 duplicate to winner pool", "note_type": "generic"}, {"ad_name": "IMG_C87C_WELCOMEKIT_NA_NA_WELCOMEKIT_YOURKITAWAITS_251121_NA_HOMEPAGE", "campaign_name": "L2 | 20251121_TOFU_GLOBAL_ASCCBO_AUTO_LC(SCALE)", "adset_name": "251121 Welcome Kit", "spend": 1491.12, "roas": 1.71, "purchases": 15, "revenue": 2552.64, "cpa": 99.41, "ctr": 0.74, "hook": null, "hold": null, "url": "", "tier": "L2", "ad_type": "Static", "note": "Generic/Static \u2014 duplicate to winner pool", "note_type": "generic"}, {"ad_name": "VID_1_KOLUGC_TAVICASTRO_PAID_HEALTHBENEFITS_10MONTHSUSINGIM8_251212_PTAD_SAEDITORIAL -10%", "campaign_name": "L2 | 20251212_TOFU_GLOBAL_ASC_AUTO_L7DWINNERS_LC#1(SCALE)", "adset_name": "l7d winners (as of 5/12/25)", "spend": 5230.2, "roas": 1.62, "purchases": 37, "revenue": 8449.17, "cpa": 141.36, "ctr": 0.7, "hook": null, "hold": null, "url": "", "tier": "L2", "ad_type": "KOL UGC", "note": "KOL UGC \u2014 duplicate to winner pool", "note_type": "kol"}, {"ad_name": "VID_1_KOLUGC_MARCELLOFERRI_PAID_BRAND_MONTAGE_260303_PTAD_GETPDP", "campaign_name": "L3 | 20260303_TOFU_GLOBAL_ASC_AUTO_GETPDP (NEW)(CLPT)_MT*", "adset_name": "260303 Top 50 L30D Winners > GET.PDP", "spend": 5504.82, "roas": 1.6, "purchases": 34, "revenue": 8787.07, "cpa": 161.91, "ctr": 0.83, "hook": null, "hold": null, "url": "", "tier": "L3", "ad_type": "KOL UGC", "note": "KOL UGC \u2014 duplicate to winner pool", "note_type": "kol"}, {"ad_name": "VID_H8B3CTA2_KOLUGC_MONASHARMA_PAID_LONGEVITY_THATSWHYIMEXCITED_260128_PTAD_VSL(ADVLONGEVITY) -10%", "campaign_name": "L2 | 20251121_TOFU_GLOBAL_ASCCBO_AUTO_LC(SCALE)", "adset_name": "260128 Winners", "spend": 8044.19, "roas": 1.59, "purchases": 51, "revenue": 12823.41, "cpa": 157.73, "ctr": 1.43, "hook": null, "hold": null, "url": "", "tier": "L2", "ad_type": "KOL UGC", "note": "KOL UGC \u2014 duplicate to winner pool", "note_type": "kol"}, {"ad_name": "260306_IMG_RVIEW_HCSS_ENERGY_C48B_NER_NERJANW3_NA_NA_THEENDOF_NA_FEELAGAINLDP", "campaign_name": "L3 | 20260306_TOFU_GLOBAL_ASCCBO_AUTO_LC_ICP(GLP1)_MT*", "adset_name": "260306 Health Condition Solution Seeker (Why IM8 lander)_ALT*", "spend": 3845.28, "roas": 1.51, "purchases": 24, "revenue": 5801.97, "cpa": 160.22, "ctr": 0.85, "hook": null, "hold": null, "url": "", "tier": "L3", "ad_type": "Static", "note": "Generic/Static \u2014 duplicate to winner pool", "note_type": "generic"}, {"ad_name": "IMG_C67C_WELCOMEKIT_NA_NA_WELCOMEKIT_WHATSINCLUDED_260303_NA_GETPDP", "campaign_name": "L3 | 20260303_TOFU_GLOBAL_ASC_AUTO_GETPDP (NEW)(CLPT)_MT*", "adset_name": "260303 Top 50 L30D Winners > GET.PDP", "spend": 7115.32, "roas": 1.5, "purchases": 44, "revenue": 10664.94, "cpa": 161.71, "ctr": 0.73, "hook": null, "hold": null, "url": "", "tier": "L3", "ad_type": "Static", "note": "Generic/Static \u2014 duplicate to winner pool", "note_type": "generic"}, {"ad_name": "VID_1_KOLUGC_MICHAELCHERNOW_PAID_CONVENIENCE_IM8THEDAILYESSENTIALS_260319_PTAD_GETPDP", "campaign_name": "L3 | 20260319_TOFU_GLOBAL_ASC_AUTO_IR_GETPDP(CLPT)_MT* (Prenetics 1_1)", "adset_name": "260319 Top 50 L30D Winners > GET.PDP_MT*", "spend": 3588.34, "roas": 1.5, "purchases": 28, "revenue": 5377.45, "cpa": 128.16, "ctr": 1.08, "hook": null, "hold": null, "url": "", "tier": "L3", "ad_type": "KOL UGC", "note": "KOL UGC \u2014 duplicate to winner pool", "note_type": "kol"}, {"ad_name": "260331_IMG_NA_GENE_BRAND_C46_NER_NERMARW4_SAB_JACLYNSAVAGE_BEFOREYOURENEWYOURAG_WTAD_JACSAVAGEADVERTORIAL", "campaign_name": "L3 | 20260305_TOFU_GLOBAL_ASC_AUTO_JACSAVAGEADVERTORIAL_LC", "adset_name": "260331 NER Jac 1/1", "spend": 8211.19, "roas": 1.5, "purchases": 42, "revenue": 12295.72, "cpa": 195.5, "ctr": 2.0, "hook": null, "hold": null, "url": "", "tier": "L3", "ad_type": "Static", "note": "Generic/Static \u2014 duplicate to winner pool", "note_type": "generic"}, {"ad_name": "VID_1_KOLUGC_TAVICASTRO_PAID_HEALTHBENEFITS_10MONTHSUSINGIM8_260310_PTAD_GETQUIZV2", "campaign_name": "L3 | 20260310_TOFU_GLOBAL_ASCCBO_AUTO_GETQUIZV2(NEW)(CLPT)_MT*", "adset_name": "260310 Top 50 L30D Winners > GETQUIZV2", "spend": 3133.3, "roas": 1.48, "purchases": 18, "revenue": 4630.71, "cpa": 174.07, "ctr": 0.71, "hook": null, "hold": null, "url": "", "tier": "L3", "ad_type": "KOL UGC", "note": "KOL UGC \u2014 duplicate to winner pool", "note_type": "kol"}, {"ad_name": "VID_H4B2CTA2_KOLUGC_MONASHARMA_PAID_LONGEVITY_THISFORMULAHITSFIVE_260128_PTAD_VSL(ADVLONGEVITY) -10%", "campaign_name": "L2 | 20251121_TOFU_GLOBAL_ASCCBO_AUTO_LC(SCALE)", "adset_name": "260128 Winners", "spend": 5470.74, "roas": 1.43, "purchases": 31, "revenue": 7810.59, "cpa": 176.48, "ctr": 2.58, "hook": null, "hold": null, "url": "", "tier": "L2", "ad_type": "KOL UGC", "note": "KOL UGC \u2014 duplicate to winner pool", "note_type": "kol"}, {"ad_name": "VID_1_KOLUGC_MICHAELCHERNOW_PAID_ALLINONE_LASTBUTNOTLEAST_260303_PTAD_GETPDP", "campaign_name": "L3 | 20260303_TOFU_GLOBAL_ASC_AUTO_GETPDP (NEW)(CLPT)_MT*", "adset_name": "260303 Top 50 L30D Winners > GET.PDP", "spend": 2143.62, "roas": 1.38, "purchases": 18, "revenue": 2953.0, "cpa": 119.09, "ctr": 2.83, "hook": null, "hold": null, "url": "", "tier": "L3", "ad_type": "KOL UGC", "note": "KOL UGC \u2014 duplicate to winner pool", "note_type": "kol"}, {"ad_name": "IMG_C4B_NERFEBW3_NA_NA_NEWFLAVORS_ONLY1YEARIN_2603O4_NA_V2UPGRADELDP", "campaign_name": "L2 | 20251121_TOFU_GLOBAL_ASCCBO_AUTO_LC(SCALE)", "adset_name": "260304 Winners", "spend": 13638.77, "roas": 1.38, "purchases": 72, "revenue": 18865.03, "cpa": 189.43, "ctr": 0.74, "hook": null, "hold": null, "url": "", "tier": "L2", "ad_type": "Static", "note": "Generic/Static \u2014 duplicate to winner pool", "note_type": "generic"}, {"ad_name": "VID_1_KOLUGC_ELIBRECHER_PAID_BRAND_IVEBEENTAKING_260320_NA_BKMFORMULALDP", "campaign_name": "L3 | 20260319_TOFU_GLOBAL_ASC_AUTO_IR_WINNERSxLANDERS_LC (IM8-USD_01)", "adset_name": "260320 16in1 > Beckham formula ldp _ALT*", "spend": 2340.28, "roas": 1.36, "purchases": 13, "revenue": 3176.25, "cpa": 180.02, "ctr": 3.95, "hook": null, "hold": null, "url": "", "tier": "L3", "ad_type": "KOL UGC", "note": "KOL UGC \u2014 duplicate to winner pool", "note_type": "kol"}, {"ad_name": "260325_VID_TALKH_GENE_HEALTHBENEFITS_1_NA_KOLUGC_AMB_DUSTINPOIRIER_SINCESTARTINGIM8_PTAD_GETPDP*", "campaign_name": "L2 | 20251212_TOFU_GLOBAL_ASC_AUTO_L7DWINNERS_LC#1(SCALE)", "adset_name": "l7d winners (as of 5/12/25)", "spend": 5865.23, "roas": 1.35, "purchases": 34, "revenue": 7943.75, "cpa": 172.51, "ctr": 1.05, "hook": null, "hold": null, "url": "", "tier": "L2", "ad_type": "KOL UGC", "note": "KOL UGC \u2014 duplicate to winner pool", "note_type": "kol"}, {"ad_name": "IMG_C101B_IM8PRODUCT_NA_NA_WELCOMEKIT_YOURKITAWAITS_260303_NA_GETPDP", "campaign_name": "L3 | 20260303_TOFU_GLOBAL_ASC_AUTO_GETPDP (NEW)(CLPT)_MT*", "adset_name": "260303 Top 50 L30D Winners > GET.PDP", "spend": 9832.92, "roas": 1.34, "purchases": 59, "revenue": 13172.7, "cpa": 166.66, "ctr": 0.85, "hook": null, "hold": null, "url": "", "tier": "L3", "ad_type": "Static", "note": "Generic/Static \u2014 duplicate to winner pool", "note_type": "generic"}, {"ad_name": "IMG_C101C_IM8PRODUCT_NA_NA_WELCOMEKIT_VALUEDAT60_260303_NA_GETPDP", "campaign_name": "L3 | 20260303_TOFU_GLOBAL_ASC_AUTO_GETPDP (NEW)(CLPT)_MT*", "adset_name": "260303 Top 50 L30D Winners > GET.PDP", "spend": 6673.91, "roas": 1.32, "purchases": 37, "revenue": 8789.54, "cpa": 180.38, "ctr": 0.65, "hook": null, "hold": null, "url": "", "tier": "L3", "ad_type": "Static", "note": "Generic/Static \u2014 duplicate to winner pool", "note_type": "generic"}, {"ad_name": "VID_1_KOLUGC_MICHAELCHERNOW_PAID_BRAND_SOIFYOUARELIKEME_2603O4_PTAD_PDP", "campaign_name": "L2 | 20251121_TOFU_GLOBAL_ASCCBO_AUTO_LC(SCALE)", "adset_name": "260304 Winners", "spend": 10795.44, "roas": 1.29, "purchases": 55, "revenue": 13911.87, "cpa": 196.28, "ctr": 1.54, "hook": null, "hold": null, "url": "", "tier": "L2", "ad_type": "KOL UGC", "note": "KOL UGC \u2014 duplicate to winner pool", "note_type": "kol"}, {"ad_name": "IMG_C92A_WELCOMEKIT_NA_NA_WELCOMEKIT_CLAIMYOURKIT_251121_NA_HOMEPAGE", "campaign_name": "L2 | 20251121_TOFU_GLOBAL_ASCCBO_AUTO_LC(SCALE)", "adset_name": "251121 Welcome Kit", "spend": 14686.22, "roas": 1.19, "purchases": 69, "revenue": 17406.16, "cpa": 212.84, "ctr": 0.96, "hook": null, "hold": null, "url": "", "tier": "L2", "ad_type": "Static", "note": "Generic/Static \u2014 duplicate to winner pool", "note_type": "generic"}, {"ad_name": "VID_1_KOLUGC_TAVICASTRO_PAID_HEALTHBENEFITS_10MONTHSUSINGIM8_260303_PTAD_GETPDP", "campaign_name": "L3 | 20260303_TOFU_GLOBAL_ASC_AUTO_GETPDP (NEW)(CLPT)_MT*", "adset_name": "260303 Top 50 L30D Winners > GET.PDP", "spend": 8115.37, "roas": 1.18, "purchases": 48, "revenue": 9539.49, "cpa": 169.07, "ctr": 0.95, "hook": null, "hold": null, "url": "", "tier": "L3", "ad_type": "KOL UGC", "note": "KOL UGC \u2014 duplicate to winner pool", "note_type": "kol"}, {"ad_name": "VID_2_JAMESPOST_DRJAMESDINIC_PAID_LONGEVITY_LONGEVITYCHEATSHEET_260312_PTAD_16IN1DRJAMES", "campaign_name": "L3 | 20260305_TOFU_GLOBAL_ASCCBO_AUTO_LC_AMB/Creator IG Post_MT*", "adset_name": "260309 Dr James DiNic(FNL)", "spend": 49380.32, "roas": 1.16, "purchases": 296, "revenue": 57377.67, "cpa": 166.83, "ctr": 3.97, "hook": null, "hold": null, "url": "", "tier": "L3", "ad_type": "Video", "note": "Generic/Static \u2014 duplicate to winner pool", "note_type": "generic"}, {"ad_name": "IMG_C32B_NERJANW4_NA_NA_WELCOMEKIT_CLAIMYOURKIT_260216_NA_PDP", "campaign_name": "L2 | 20251121_TOFU_GLOBAL_ASCCBO_AUTO_LC(SCALE)", "adset_name": "260215 Winners", "spend": 3277.75, "roas": 1.14, "purchases": 18, "revenue": 3743.62, "cpa": 182.1, "ctr": 0.9, "hook": null, "hold": null, "url": "", "tier": "L2", "ad_type": "Static", "note": "Generic/Static \u2014 duplicate to winner pool", "note_type": "generic"}, {"ad_name": "IMG_C132B_EXPLOSIVEPOWDERESSENTIAL_NA_NA_PERFORMANCE_LIMITEDTIME2026DEAL_251231_NA_NYLDP", "campaign_name": "L3 | 20251128_TOFU_ROW_ASC_AUTO_p+v7day_CAP($258)(SCALE)", "adset_name": "New Sales ad set", "spend": 23988.4, "roas": 1.13, "purchases": 96, "revenue": 27055.84, "cpa": 249.88, "ctr": 2.44, "hook": null, "hold": null, "url": "", "tier": "L3", "ad_type": "Static", "note": "Generic/Static \u2014 duplicate to winner pool", "note_type": "generic"}, {"ad_name": "VID_ACH-ILLIA(52)1SS3_CREATORUGC_ACH_PAID_JOINTSHEALTH_THISISWHATHAPPENSWHENYOUDRINK_260310_NA_GETQUIZV2", "campaign_name": "L3 | 20260310_TOFU_GLOBAL_ASCCBO_AUTO_GETQUIZV2(NEW)(CLPT)_MT*", "adset_name": "260310 Top 50 L30D Winners > GETQUIZV2", "spend": 7426.26, "roas": 1.13, "purchases": 25, "revenue": 8388.32, "cpa": 297.05, "ctr": 1.11, "hook": null, "hold": null, "url": "", "tier": "L3", "ad_type": "Creator UGC", "note": "Creator UGC \u2014 duplicate to winner pool", "note_type": "kol"}, {"ad_name": "VID_2_KOLUGC_TINALONDCAULK_PAID_MULTIUSP_SOYOUMAYHAVEHEARD_260304_PTAD_WHATSMISSINGLDP", "campaign_name": "L2 | 20260319_TOFU_GLOBAL_ASC_AUTO_IR_p+v7day (IM8-USD-01)", "adset_name": "L2 | 20250305_TOFU_GLOBAL_ASC_AUTO_p+v7day Ad Set", "spend": 7328.37, "roas": 1.13, "purchases": 31, "revenue": 8247.1, "cpa": 236.4, "ctr": 1.38, "hook": null, "hold": null, "url": "", "tier": "L2", "ad_type": "KOL UGC", "note": "KOL UGC \u2014 duplicate to winner pool", "note_type": "kol"}, {"ad_name": "IMG_C14C_GABY_NA_NA_GABYDABROWSKI_GABYDABROWSKISPOWERPLAY_260310_PTAD_GETQUIZV2", "campaign_name": "L3 | 20260310_TOFU_GLOBAL_ASCCBO_AUTO_GETQUIZV2(NEW)(CLPT)_MT*", "adset_name": "260310 Top 50 L30D Winners > GETQUIZV2", "spend": 4772.97, "roas": 1.12, "purchases": 21, "revenue": 5337.91, "cpa": 227.28, "ctr": 1.43, "hook": null, "hold": null, "url": "", "tier": "L3", "ad_type": "Static", "note": "Generic/Static \u2014 duplicate to winner pool", "note_type": "generic"}, {"ad_name": "IMG_C40D_ESSENTIALSANDLONGEVITY_NA_NA_LONGEVITY_PAIRITWITHESSENTIALS_251121_NA_PDP(TBS)", "campaign_name": "L2 | 20251121_TOFU_GLOBAL_ASCCBO_AUTO_LC(SCALE)", "adset_name": "251121 Longevity IMG Winners", "spend": 10683.93, "roas": 1.11, "purchases": 46, "revenue": 11825.9, "cpa": 232.26, "ctr": 0.91, "hook": null, "hold": null, "url": "", "tier": "L2", "ad_type": "Static", "note": "Generic/Static \u2014 duplicate to winner pool", "note_type": "generic"}, {"ad_name": "IMG_C36B_NERFEBW3_NA_NA_WELCOMEKIT_CLAIMYOURFREE_260319_NA_PDP", "campaign_name": "L3 | 20251128_TOFU_ROW_ASC_AUTO_p+v7day_CAP($258)(SCALE)", "adset_name": "New Sales ad set", "spend": 2666.54, "roas": 1.1, "purchases": 16, "revenue": 2938.94, "cpa": 166.66, "ctr": 1.4, "hook": null, "hold": null, "url": "", "tier": "L3", "ad_type": "Static", "note": "Generic/Static \u2014 duplicate to winner pool", "note_type": "generic"}, {"ad_name": "IMG_C25B_LONGEVITYKITSTACKS_NA_NA_NEWYEAR_NEWYEARBETTERYOU_260312_NA_NYLDP", "campaign_name": "L3 | 20251128_TOFU_ROW_ASC_AUTO_p+v7day_CAP($258)(SCALE)", "adset_name": "New Sales ad set", "spend": 9813.46, "roas": 1.06, "purchases": 34, "revenue": 10448.8, "cpa": 288.63, "ctr": 2.98, "hook": null, "hold": null, "url": "", "tier": "L3", "ad_type": "Static", "note": "Generic/Static \u2014 duplicate to winner pool", "note_type": "generic"}, {"ad_name": "VID_ACH-MAKS36(2)SS5_CREATORUGC_ACH_PAID_GUTHEALTH_IHAVENTHADAFLAREUP_260303_NA_GETPDP", "campaign_name": "L3 | 20260303_TOFU_GLOBAL_ASC_AUTO_GETPDP (NEW)(CLPT)_MT*", "adset_name": "260303 Top 50 L30D Winners > GET.PDP", "spend": 3180.79, "roas": 1.02, "purchases": 12, "revenue": 3235.84, "cpa": 265.07, "ctr": 1.57, "hook": null, "hold": null, "url": "", "tier": "L3", "ad_type": "Creator UGC", "note": "Creator UGC \u2014 duplicate to winner pool", "note_type": "kol"}, {"ad_name": "IMG_C40C_ESSENTIALSANDLONGEVITY_NA_NA_LONGEVITY_THEBECKHAMSTACK_260303_NA_GETPDP", "campaign_name": "L3 | 20260303_TOFU_GLOBAL_ASC_AUTO_GETPDP (NEW)(CLPT)_MT*", "adset_name": "260303 Top 50 L30D Winners > GET.PDP", "spend": 12247.32, "roas": 1.02, "purchases": 48, "revenue": 12502.62, "cpa": 255.15, "ctr": 1.1, "hook": null, "hold": null, "url": "", "tier": "L3", "ad_type": "Static", "note": "Generic/Static \u2014 duplicate to winner pool", "note_type": "generic"}, {"ad_name": "VID_ACH-VLAD(3)1SS2_CREATORUGC_ACH_PAID_HEALTHBENEFITS_WHATHAPPENSWHENYOUDRINKIM8_251212_NA_HOMEPAGE", "campaign_name": "L2 | 20251212_TOFU_GLOBAL_ASC_AUTO_L7DWINNERS_LC#1(SCALE)", "adset_name": "l7d winners (as of 5/12/25)", "spend": 22166.21, "roas": 1.01, "purchases": 94, "revenue": 22469.7, "cpa": 235.81, "ctr": 0.79, "hook": null, "hold": null, "url": "", "tier": "L2", "ad_type": "Creator UGC", "note": "Creator UGC \u2014 duplicate to winner pool", "note_type": "kol"}, {"ad_name": "VID_ACH-ILLIA(52)1SS3_CREATORUGC_ACH_PAID_JOINTSHEALTH_THISISWHATHAPPENSWHENYOUDRINK_260303_NA_GETPDP", "campaign_name": "L3 | 20260303_TOFU_GLOBAL_ASC_AUTO_GETPDP (NEW)(CLPT)_MT*", "adset_name": "260303 Top 50 L30D Winners > GET.PDP", "spend": 73005.28, "roas": 1.01, "purchases": 347, "revenue": 73396.93, "cpa": 210.39, "ctr": 1.1, "hook": null, "hold": null, "url": "", "tier": "L3", "ad_type": "Creator UGC", "note": "Creator UGC \u2014 duplicate to winner pool", "note_type": "kol"}], "stats": {"action_count": 39, "icp_count": 0, "l1_count": 39, "tagged_count": 52, "total_spend": 380773.14, "total_revenue": 475169.15, "avg_roas": 1.44, "total_purchases": 2005}};
 const fmt = {
   usd: v => v!=null&&v>0 ? '$'+v.toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:0}) : '—',
   roas: v => v!=null ? v.toFixed(2)+'x' : '—',
@@ -114,8 +126,8 @@ function roasClass(r){return r>=2?'great':r>=1.5?'good':'ok';}
 const stats = DATA.stats;
 const statDefs = [
   {label:'Total Winners', value:stats.action_count, cls:'gold'},
-  {label:'L1 Discoveries', value:stats.l1_count, cls:''},
-  {label:'ICP/Persona', value:stats.icp_count, cls:'purple'},
+  {label:'L1 Discoveries', value:stats.l1_count||0, cls:''},
+  {label:'ICP/Persona', value:stats.icp_count||0, cls:'purple'},
   {label:'Total Spend', value:fmt.usd(stats.total_spend), cls:''},
   {label:'Total Revenue', value:fmt.usd(stats.total_revenue), cls:'green'},
   {label:'Avg ROAS', value:fmt.roas(stats.avg_roas), cls:stats.avg_roas>=1.5?'green':'gold'},
@@ -125,21 +137,20 @@ document.getElementById('statsGrid').innerHTML = statDefs.map((s,i) =>
 ).join('');
 document.getElementById('actionCount').textContent = stats.action_count + ' ads';
 document.getElementById('footerDate').textContent = 'Generated ' + new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
-
 function buildCard(ad) {
-  const nt = ad.noteType || 'generic';
+  const nt = ad.note_type || 'generic';
   const shortNote = nt==='kol' ? 'Dupe → Winner Pool' : nt==='icp' ? 'Tag only' : 'Dupe → Winner Pool';
   return `<div class="card" onclick="toggleCard(this)">
     <div class="card-main">
       <div class="card-accent ${nt}"></div>
       <div class="card-left">
         <div class="tier-badge tier-${ad.tier}">${ad.tier}</div>
-        <div class="type-chip">${ad.type}</div>
+        <div class="type-chip">${ad.ad_type}</div>
         <div class="action-badge ${nt}">${shortNote}</div>
       </div>
       <div class="card-body">
-        <div class="ad-name">${ad.name}</div>
-        <div class="meta-item">📁 ${ad.adset}</div>
+        <div class="ad-name">${ad.ad_name}</div>
+        <div class="meta-item">📁 ${ad.adset_name}</div>
       </div>
       <div class="card-metrics">
         <div class="metric"><div class="metric-label">Spend</div><div class="metric-value ok">${fmt.usd(ad.spend)}</div></div>
@@ -150,13 +161,11 @@ function buildCard(ad) {
       </div>
     </div>
     <div class="card-expand">
-      <div class="expand-group"><div class="expand-label">Campaign</div><div class="expand-value">${ad.campaign}</div></div>
-      <div class="expand-group"><div class="expand-label">Ad Set</div><div class="expand-value">${ad.adset}</div></div>
+      <div class="expand-group"><div class="expand-label">Campaign</div><div class="expand-value">${ad.campaign_name}</div></div>
+      <div class="expand-group"><div class="expand-label">Ad Set</div><div class="expand-value">${ad.adset_name}</div></div>
       <div class="expand-group"><div class="expand-label">Landing Page</div><div class="expand-value"><a href="${ad.url}" target="_blank">${ad.url||'—'}</a></div></div>
-      <div class="expand-group"><div class="expand-label">Creative Metrics</div>
+      <div class="expand-group"><div class="expand-label">Metrics</div>
         <div class="expand-value" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:2px;">
-          <span class="pill-stat"><span class="dot" style="background:var(--teal)"></span>Hook ${ad.hook!=null?ad.hook+'%':'n/a'}</span>
-          <span class="pill-stat"><span class="dot" style="background:var(--purple)"></span>Hold ${ad.hold!=null?ad.hold+'%':'n/a'}</span>
           <span class="pill-stat"><span class="dot" style="background:var(--gold)"></span>CTR ${ad.ctr!=null?ad.ctr+'%':'n/a'}</span>
           <span class="pill-stat"><span class="dot" style="background:var(--amber)"></span>CPA ${fmt.usd(ad.cpa)}</span>
         </div>
@@ -165,23 +174,24 @@ function buildCard(ad) {
     </div>
   </div>`;
 }
-
-const icpAds = DATA.action.filter(a => a.noteType === 'icp');
-const l1Ads  = DATA.action.filter(a => a.noteType !== 'icp');
+const icpAds = DATA.action.filter(a => a.note_type === 'icp');
+const restAds = DATA.action.filter(a => a.note_type !== 'icp');
 const cardsEl = document.getElementById('actionCards');
-
-let html = '';
-if (icpAds.length) {
-  html += `<div class="divider"><div class="divider-label">ICP / Persona — tag only</div><div class="divider-line"></div></div>`;
-  html += icpAds.map(buildCard).join('');
+if (DATA.action.length === 0) {
+  cardsEl.innerHTML = `<div class="empty-state"><span class="emoji">🔍</span><h3>No winners yet this week</h3><p>All ads are below threshold (ROAS &gt; 1.0 &amp; Purchases &gt; 10)<br>Check back tomorrow — this updates automatically.</p></div>`;
+} else {
+  let html = '';
+  if (icpAds.length) {
+    html += `<div class="divider"><div class="divider-label">ICP / Persona — tag only</div><div class="divider-line"></div></div>`;
+    html += icpAds.map(buildCard).join('');
+  }
+  if (restAds.length) {
+    html += `<div class="divider"><div class="divider-label">L1 discoveries — duplicate to winner pool</div><div class="divider-line"></div></div>`;
+    html += restAds.map(buildCard).join('');
+  }
+  cardsEl.innerHTML = html;
+  document.querySelectorAll('.card').forEach((c,i) => c.style.animationDelay = (i*.07)+'s');
 }
-if (l1Ads.length) {
-  html += `<div class="divider"><div class="divider-label">L1 discoveries — duplicate to winner pool</div><div class="divider-line"></div></div>`;
-  html += l1Ads.map(buildCard).join('');
-}
-cardsEl.innerHTML = html;
-document.querySelectorAll('.card').forEach((c,i) => c.style.animationDelay = (i*.07)+'s');
-
 function toggleCard(card) { card.classList.toggle('open'); }
 function toggleDone(btn, e) {
   e.stopPropagation();
