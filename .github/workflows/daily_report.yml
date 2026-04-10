@@ -4,30 +4,24 @@ on:
   schedule:
     - cron: '0 1 * * 1'   # Monday 9am MYT
     - cron: '0 1 * * 5'   # Friday 9am MYT
-  workflow_dispatch:        # manual trigger anytime
+  workflow_dispatch:
 
 jobs:
   generate-report:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-
       - name: Run winners script
         env:
           META_ACCESS_TOKEN: ${{ secrets.META_ACCESS_TOKEN }}
         run: python fetch_winners.py
-
       - name: Commit and push
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add index.html run_history.json
+          git add index.html
           git diff --staged --quiet || git commit -m "Winners $(date +'%A %-d %b %Y')"
           git push
