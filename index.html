@@ -2,192 +2,311 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>WIN26APW2 — IM8 Winners</title>
+<title>IM8 Winners Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0a0a0f;--surface:#111118;--surface2:#18181f;--border:rgba(255,255,255,.07);--gold:#e8b450;--gold-dim:rgba(232,180,80,.12);--teal:#3ecfb2;--teal-dim:rgba(62,207,178,.1);--purple:#9b7cff;--purple-dim:rgba(155,124,255,.1);--blue:#60a5fa;--blue-dim:rgba(96,165,250,.1);--green:#4ade80;--amber:#fb923c;--white:#f0f0f8;--muted:#5a5a7a;--l1:#fb923c;--l3:#60a5fa;}
+:root{--bg:#0a0a0f;--surface:#111118;--surface2:#18181f;--border:rgba(255,255,255,.07);--gold:#e8b450;--gold-dim:rgba(232,180,80,.12);--teal:#3ecfb2;--teal-dim:rgba(62,207,178,.1);--purple:#9b7cff;--purple-dim:rgba(155,124,255,.1);--blue:#60a5fa;--green:#4ade80;--amber:#fb923c;--red:#f87171;--white:#f0f0f8;--muted:#5a5a7a;--l1:#fb923c;--l3:#60a5fa;}
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:var(--bg);color:var(--white);font-family:"DM Sans",sans-serif;font-weight:300;min-height:100vh;}
 body::before{content:"";position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:.4;}
-.wrap{position:relative;z-index:1;max-width:1400px;margin:0 auto;padding:0 32px 80px;}
-header{padding:48px 0 40px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:24px;}
-.tag-chip{display:inline-flex;align-items:center;gap:8px;background:var(--gold-dim);border:1px solid var(--gold);border-radius:4px;padding:4px 12px;font-family:"DM Mono",monospace;font-size:11px;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;margin-bottom:16px;}
-.tag-chip::before{content:"";width:6px;height:6px;background:var(--gold);border-radius:50%;animation:pulse 2s infinite;}
+
+/* Layout */
+.app{position:relative;z-index:1;display:flex;flex-direction:column;min-height:100vh;}
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:stretch;justify-content:space-between;gap:0;position:sticky;top:0;z-index:100;}
+.brand{display:flex;align-items:center;gap:12px;padding:16px 0;border-right:1px solid var(--border);padding-right:24px;margin-right:8px;}
+.brand-dot{width:8px;height:8px;background:var(--gold);border-radius:50%;animation:pulse 2s infinite;}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-h1{font-family:"Syne",sans-serif;font-size:clamp(32px,5vw,56px);font-weight:800;letter-spacing:-.03em;line-height:1;}
-h1 span{color:var(--gold);}
-.week-label{margin-top:10px;font-size:13px;color:var(--muted);font-family:"DM Mono",monospace;}
-.run-badge{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 20px;text-align:right;min-width:200px;}
-.run-badge .day{font-family:"Syne",sans-serif;font-size:20px;font-weight:700;color:var(--green);}
-.run-badge .ts{font-size:11px;color:var(--muted);font-family:"DM Mono",monospace;margin-top:4px;}
-.run-badge .next{font-size:11px;color:var(--amber);font-family:"DM Mono",monospace;margin-top:2px;}
-.wa-panel{background:var(--surface);border:1px solid rgba(37,211,102,.25);border-radius:12px;padding:20px 24px;margin:32px 0;}
-.wa-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
-.wa-title{font-family:"DM Mono",monospace;font-size:12px;color:#25D366;letter-spacing:.08em;text-transform:uppercase;display:flex;align-items:center;gap:8px;}
-.wa-copy{background:rgba(37,211,102,.1);border:1px solid rgba(37,211,102,.3);color:#25D366;font-family:"DM Mono",monospace;font-size:11px;padding:6px 16px;border-radius:20px;cursor:pointer;transition:all .2s;}
-.wa-copy:hover{background:rgba(37,211,102,.2);}
-.wa-copy.copied{background:rgba(37,211,102,.25);}
-.wa-text{font-family:"DM Mono",monospace;font-size:12px;color:var(--white);opacity:.8;white-space:pre-wrap;line-height:1.75;}
-.stats-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin:32px 0;}
-.stat{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px;position:relative;overflow:hidden;animation:fadeUp .5s ease both;}
-.stat::after{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.5;}
-.stat-label{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:6px;font-family:"DM Mono",monospace;}
+.brand-name{font-family:"Syne",sans-serif;font-size:15px;font-weight:700;color:var(--gold);letter-spacing:-.01em;}
+.tabs{display:flex;align-items:stretch;gap:0;overflow-x:auto;flex:1;}
+.tabs::-webkit-scrollbar{display:none;}
+.tab{display:flex;flex-direction:column;justify-content:center;padding:0 20px;cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap;min-width:fit-content;border-right:1px solid var(--border);}
+.tab:hover{background:rgba(255,255,255,.03);}
+.tab.active{border-bottom-color:var(--gold);background:rgba(232,180,80,.05);}
+.tab-day{font-family:"DM Mono",monospace;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:2px;}
+.tab.active .tab-day{color:var(--gold);}
+.tab-date{font-size:13px;font-weight:500;color:var(--white);}
+.tab-count{font-family:"DM Mono",monospace;font-size:10px;margin-top:2px;}
+.tab.active .tab-count{color:var(--green);}
+.tab-count.has-untagged{color:var(--amber);}
+.topbar-right{display:flex;align-items:center;gap:12px;padding:0 0 0 16px;border-left:1px solid var(--border);margin-left:8px;}
+.live-badge{display:flex;align-items:center;gap:6px;font-family:"DM Mono",monospace;font-size:10px;color:var(--green);}
+.live-dot{width:6px;height:6px;background:var(--green);border-radius:50%;animation:pulse 2s infinite;}
+.last-updated{font-family:"DM Mono",monospace;font-size:10px;color:var(--muted);}
+
+/* Main */
+.main{flex:1;padding:32px;max-width:1400px;margin:0 auto;width:100%;}
+.run-header{margin-bottom:28px;}
+.run-title{font-family:"Syne",sans-serif;font-size:clamp(24px,3vw,40px);font-weight:800;letter-spacing:-.03em;}
+.run-title span{color:var(--gold);}
+.run-meta{font-family:"DM Mono",monospace;font-size:12px;color:var(--muted);margin-top:6px;display:flex;gap:16px;flex-wrap:wrap;}
+.run-meta b{color:var(--white);}
+
+/* Stats row */
+.stats-row{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:32px;}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 18px;position:relative;overflow:hidden;}
+.stat::after{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.4;}
+.stat-label{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:5px;font-family:"DM Mono",monospace;}
 .stat-value{font-family:"Syne",sans-serif;font-size:22px;font-weight:700;}
-.gold{color:var(--gold);} .green{color:var(--green);} .teal{color:var(--teal);} .purple{color:var(--purple);} .blue{color:var(--blue);}
-.section-head{display:flex;align-items:center;gap:14px;margin:44px 0 12px;}
-.section-head h2{font-family:"Syne",sans-serif;font-size:17px;font-weight:700;}
-.sc{font-family:"DM Mono",monospace;font-size:11px;background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:3px 12px;color:#8888aa;}
-.sl{flex:1;height:1px;background:var(--border);}
-.sh{font-size:11px;color:var(--muted);font-family:"DM Mono",monospace;}
-.cards{display:flex;flex-direction:column;gap:8px;}
-.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:border-color .2s,transform .2s;animation:fadeUp .35s ease both;cursor:pointer;}
-.card:hover{border-color:rgba(232,180,80,.3);transform:translateY(-1px);}
-.card-main{display:grid;grid-template-columns:120px 1fr auto;align-items:stretch;min-height:70px;}
-.card-left{display:flex;flex-direction:column;justify-content:center;gap:5px;padding:12px 14px;border-right:1px solid var(--border);flex-shrink:0;}
-.tb{display:inline-flex;align-items:center;justify-content:center;font-family:"DM Mono",monospace;font-size:10px;font-weight:500;padding:2px 8px;border-radius:3px;width:fit-content;}
-.tb.tier-L1{background:rgba(251,146,60,.15);color:var(--l1);border:1px solid rgba(251,146,60,.3);}
-.tb.tier-L3{background:rgba(96,165,250,.1);color:var(--l3);border:1px solid rgba(96,165,250,.25);}
-.tc{font-size:10px;color:var(--muted);}
-.ab{font-size:10px;font-family:"DM Mono",monospace;font-weight:500;padding:3px 7px;border-radius:3px;text-align:center;line-height:1.3;}
-.ab.kol{background:var(--teal-dim);color:var(--teal);border:1px solid rgba(62,207,178,.2);}
-.ab.generic{background:var(--gold-dim);color:var(--gold);}
-.ab.icp{background:var(--purple-dim);color:var(--purple);border:1px solid rgba(155,124,255,.2);}
-.ab.ret{background:var(--blue-dim);color:var(--blue);border:1px solid rgba(96,165,250,.2);}
-.cb{display:flex;flex-direction:column;justify-content:center;padding:12px 20px;gap:3px;min-width:0;}
-.an{font-family:"DM Mono",monospace;font-size:11px;color:var(--white);opacity:.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.mr{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:2px;}
-.mi{font-size:11px;color:var(--muted);}
-.im{font-family:"DM Mono",monospace;font-size:11px;font-weight:500;}
-.im.sp{color:var(--amber);} .im.pu{color:var(--white);opacity:.6;}
-.im.ro.great{color:var(--green);font-weight:700;} .im.ro.good{color:#a3e635;} .im.ro.ok{color:var(--amber);}
-.ce{display:none;border-top:1px solid var(--border);background:var(--surface2);padding:14px 20px;gap:18px;flex-wrap:wrap;}
-.card.open .ce{display:flex;}
-.eg{display:flex;flex-direction:column;gap:3px;min-width:110px;}
-.el{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-family:"DM Mono",monospace;}
-.ev{font-size:12px;color:var(--white);}
-.ev a{color:var(--gold);text-decoration:none;font-family:"DM Mono",monospace;font-size:11px;word-break:break-all;}
-.ev a:hover{text-decoration:underline;}
-.db{margin-left:auto;align-self:flex-start;background:transparent;border:1px solid var(--border);color:var(--muted);font-family:"DM Mono",monospace;font-size:11px;padding:5px 14px;border-radius:6px;cursor:pointer;transition:all .2s;}
-.db:hover{border-color:var(--green);color:var(--green);}
-.db.done{background:rgba(74,222,128,.1);border-color:var(--green);color:var(--green);}
-.card.done-card{opacity:.4;filter:grayscale(.5);}
-.ch{width:20px;height:20px;display:flex;align-items:center;justify-content:center;margin:0 14px;flex-shrink:0;color:var(--muted);transition:transform .2s;}
-.card.open .ch{transform:rotate(180deg);}
-.empty{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:32px;text-align:center;font-family:"DM Mono",monospace;font-size:12px;color:var(--muted);}
-@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-footer{margin-top:64px;padding-top:24px;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:11px;color:var(--muted);font-family:"DM Mono",monospace;}
-@media(max-width:900px){.stats-grid{grid-template-columns:repeat(3,1fr);}}
+
+/* Section */
+.section{margin-bottom:32px;}
+.section-head{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+.section-head h2{font-family:"Syne",sans-serif;font-size:16px;font-weight:700;}
+.section-badge{font-family:"DM Mono",monospace;font-size:11px;padding:3px 10px;border-radius:20px;}
+.section-badge.action{background:rgba(251,146,60,.15);color:var(--amber);border:1px solid rgba(251,146,60,.3);}
+.section-badge.done{background:rgba(74,222,128,.1);color:var(--green);border:1px solid rgba(74,222,128,.2);}
+.section-line{flex:1;height:1px;background:var(--border);}
+.toggle-tagged{font-family:"DM Mono",monospace;font-size:11px;color:var(--muted);cursor:pointer;padding:3px 10px;border:1px solid var(--border);border-radius:20px;background:transparent;transition:all .2s;}
+.toggle-tagged:hover{border-color:var(--green);color:var(--green);}
+
+/* Cards grid */
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(380px,1fr));gap:12px;}
+
+/* Card */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:border-color .2s,transform .2s;animation:fadeUp .3s ease both;}
+.card:hover{border-color:rgba(232,180,80,.25);transform:translateY(-2px);}
+.card.tagged-card{opacity:.6;}
+.card.tagged-card:hover{opacity:1;}
+
+/* Card thumbnail */
+.card-thumb{position:relative;width:100%;aspect-ratio:16/9;background:var(--surface2);overflow:hidden;}
+.card-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+.card-thumb .no-thumb{display:flex;align-items:center;justify-content:center;width:100%;height:100%;color:var(--muted);font-family:"DM Mono",monospace;font-size:11px;}
+.thumb-badges{position:absolute;top:8px;left:8px;display:flex;gap:6px;flex-wrap:wrap;}
+.thumb-type{font-family:"DM Mono",monospace;font-size:10px;font-weight:500;padding:3px 8px;border-radius:4px;backdrop-filter:blur(8px);}
+.thumb-type.kol{background:rgba(62,207,178,.8);color:#000;}
+.thumb-type.generic{background:rgba(232,180,80,.8);color:#000;}
+.thumb-type.icp{background:rgba(155,124,255,.8);color:#fff;}
+.thumb-type.static{background:rgba(96,165,250,.8);color:#000;}
+.thumb-tagged{position:absolute;top:8px;right:8px;background:rgba(74,222,128,.9);color:#000;font-family:"DM Mono",monospace;font-size:10px;font-weight:500;padding:3px 8px;border-radius:4px;}
+.fb-link{position:absolute;bottom:8px;right:8px;background:rgba(10,10,15,.8);border:1px solid rgba(255,255,255,.15);border-radius:6px;padding:5px 10px;font-family:"DM Mono",monospace;font-size:10px;color:var(--blue);text-decoration:none;backdrop-filter:blur(8px);transition:all .2s;display:flex;align-items:center;gap:5px;}
+.fb-link:hover{background:rgba(96,165,250,.2);border-color:var(--blue);}
+
+/* Card body */
+.card-body{padding:14px 16px;}
+.card-adname{font-family:"DM Mono",monospace;font-size:10px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:6px;}
+.card-metrics{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;}
+.metric{display:flex;flex-direction:column;gap:2px;}
+.metric-label{font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-family:"DM Mono",monospace;}
+.metric-value{font-family:"Syne",sans-serif;font-size:16px;font-weight:700;line-height:1;}
+.metric-value.great{color:var(--green);} .metric-value.good{color:#a3e635;} .metric-value.ok{color:var(--amber);}
+.card-footer{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;}
+.badges{display:flex;gap:6px;flex-wrap:wrap;}
+.badge{font-family:"DM Mono",monospace;font-size:10px;font-weight:500;padding:3px 8px;border-radius:4px;}
+.badge.tier-L1{background:rgba(251,146,60,.15);color:var(--l1);border:1px solid rgba(251,146,60,.3);}
+.badge.tier-L3{background:rgba(96,165,250,.1);color:var(--l3);border:1px solid rgba(96,165,250,.25);}
+.badge.kol{background:var(--teal-dim);color:var(--teal);border:1px solid rgba(62,207,178,.2);}
+.badge.generic{background:var(--gold-dim);color:var(--gold);}
+.badge.icp{background:var(--purple-dim);color:var(--purple);border:1px solid rgba(155,124,255,.2);}
+.lp-link{font-family:"DM Mono",monospace;font-size:10px;color:var(--muted);text-decoration:none;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.lp-link:hover{color:var(--gold);}
+
+/* Empty */
+.empty-run{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 40px;text-align:center;}
+.empty-run .emoji{font-size:48px;margin-bottom:16px;}
+.empty-run h3{font-family:"Syne",sans-serif;font-size:22px;font-weight:700;margin-bottom:8px;}
+.empty-run p{font-family:"DM Mono",monospace;font-size:12px;color:var(--muted);}
+.no-data{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:32px;text-align:center;font-family:"DM Mono",monospace;font-size:12px;color:var(--muted);}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:768px){.stats-row{grid-template-columns:repeat(3,1fr);} .cards-grid{grid-template-columns:1fr;} .main{padding:16px;}}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header>
-    <div>
-      <div class="tag-chip">IM8 Winners Report</div>
-      <h1>Winners<br><span>WIN26APW2</span></h1>
-      <div class="week-label">3 Apr – 10 Apr 2026 &nbsp;·&nbsp; IM8 Health &nbsp;·&nbsp; Meta Ads</div>
+<div class="app">
+
+  <!-- Top bar -->
+  <div class="topbar">
+    <div class="brand">
+      <div class="brand-dot"></div>
+      <div class="brand-name">IM8 Winners</div>
     </div>
-    <div class="run-badge">
-      <div class="day">Friday Cut</div>
-      <div class="ts">Updated: 10 Apr 2026, 07:40 UTC</div>
-      <div class="next">Next: <span id="nextRun"></span></div>
+    <div class="tabs" id="tabs"></div>
+    <div class="topbar-right">
+      <div class="live-badge"><div class="live-dot"></div>Live</div>
+      <div class="last-updated" id="lastUpdated"></div>
     </div>
-  </header>
+  </div>
 
-  <div class="wa-panel">
-    <div class="wa-header">
-      <div class="wa-title">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.087.537 4.046 1.477 5.755L.055 23.438a.5.5 0 0 0 .614.6l5.7-1.494A11.955 11.955 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.75a9.742 9.742 0 0 1-5.031-1.394l-.36-.214-3.735.978.997-3.634-.234-.374A9.719 9.719 0 0 1 2.25 12C2.25 6.615 6.615 2.25 12 2.25S21.75 6.615 21.75 12 17.385 21.75 12 21.75z"/></svg>
-        WhatsApp Summary
-      </div>
-      <button class="wa-copy" onclick="copyWA(this)">Copy</button>
+  <!-- Main content -->
+  <div class="main" id="main">
+    <div class="empty-run">
+      <div class="emoji">📊</div>
+      <h3>No runs yet</h3>
+      <p>Run the workflow to generate the first winners report</p>
     </div>
-    <div class="wa-text" id="waText"></div>
   </div>
 
-  <div class="stats-grid" id="sg"></div>
-
-  <div class="section-head">
-    <h2>🆕 New — Duplicate to Winner Pool</h2>
-    <div class="sc" id="c1"></div><div class="sl"></div>
-  </div>
-  <div class="cards" id="s1"></div>
-
-  <div class="section-head">
-    <h2>🆕 New — ICP Tag Only</h2>
-    <div class="sc" id="c2"></div><div class="sl"></div>
-  </div>
-  <div class="cards" id="s2"></div>
-
-  <div class="section-head">
-    <h2>🔄 Still Winning</h2>
-    <div class="sc" id="c3"></div><div class="sl"></div>
-    <div class="sh">From last run — no action needed</div>
-  </div>
-  <div class="cards" id="s3"></div>
-
-  <footer>
-    <span>Internal use only &nbsp;·&nbsp; WIN26APW2 &nbsp;·&nbsp; IM8 Health &nbsp;·&nbsp; Auto-generated via Meta API</span>
-    <span>10 Apr 2026, 07:40 UTC</span>
-  </footer>
 </div>
 <script>
-const D={"tag": "WIN26APW2", "week": "3 Apr \u2013 10 Apr 2026", "run_day": "Friday", "now": "10 Apr 2026, 07:40 UTC", "wa_text": "\ud83c\udfc6 *WIN26APW2 Winners \u2014 Friday 10 Apr*\n\ud83d\udcc5 3 Apr \u2013 10 Apr 2026\n\n*\ud83c\udd95 New \u2014 Duplicate to Winner Pool*\n\u2022 KOL UGC (Tavicastro) \u2014 ROAS 1.80x, 81P, $10,204\n\u2022 Static \u2014 ROAS 1.77x, 93P, $17,428\n\u2022 Static \u2014 ROAS 1.66x, 182P, $25,118\n\u2022 Static \u2014 ROAS 1.60x, 15P, $2,689\n\u2022 Static \u2014 ROAS 1.52x, 12P, $1,651\n\u2022 KOL UGC (Jaclynsavage) \u2014 ROAS 1.46x, 17P, $2,950\n\u2022 Static \u2014 ROAS 1.45x, 15P, $2,230\n\u2022 Static \u2014 ROAS 1.35x, 20P, $3,218\n\u2022 Static \u2014 ROAS 1.33x, 18P, $3,867\n\u2022 KOL UGC (Michaelchernow) \u2014 ROAS 1.32x, 16P, $3,566\n\u2022 KOL UGC (Monasharma) \u2014 ROAS 1.22x, 49P, $11,344\n\u2022 Static \u2014 ROAS 1.19x, 28P, $5,134\n\u2022 KOL UGC (Dustinpederson) \u2014 ROAS 1.18x, 20P, $3,400\n\u2022 Video \u2014 ROAS 1.16x, 77P, $15,365\n\u2022 Static \u2014 ROAS 1.16x, 33P, $6,295\n\u2022 KOL UGC (Tawnyjanae) \u2014 ROAS 1.15x, 40P, $8,048\n\u2022 KOL UGC (Drarasuppiah) \u2014 ROAS 1.14x, 32P, $7,281\n\u2022 KOL UGC (Monasharma) \u2014 ROAS 1.12x, 68P, $16,309\n\u2022 IG Post \u2014 ROAS 1.10x, 46P, $8,736\n\u2022 Video \u2014 ROAS 1.09x, 11P, $2,091\n\u2022 IG Post \u2014 ROAS 1.08x, 118P, $19,625\n\u2022 KOL UGC (Drjamesdinic) \u2014 ROAS 1.04x, 29P, $5,119\n\u2022 Static \u2014 ROAS 1.02x, 104P, $22,855\n\u2022 Static \u2014 ROAS 1.02x, 48P, $13,660\n\u2022 Static \u2014 ROAS 1.02x, 55P, $11,975\n\u2022 IG Post \u2014 ROAS 1.02x, 422P, $84,151\n\u2022 KOL UGC (Drarasuppiah) \u2014 ROAS 1.01x, 14P, $3,040\n\n*\ud83c\udd95 New \u2014 ICP Tag Only*\n\u2022 IMG_C26C_SACHETPOWDEREXPLODEINTHEDARK_NA_NA_RECOVE... \u2014 ROAS 1.16x, 20P\n\u2022 260409_VID_AIVSL_GLP1_WEIGHTLOSS_V2C7_LJV_NA_NA_CO... \u2014 ROAS 1.02x, 34P\n\n\ud83d\udcca *29 total | Avg ROAS 1.25x | 1717P | $392,878 rev*", "pool_new": [{"ad_name": "VID_1_KOLUGC_TAVICASTRO_PAID_HEALTHBENEFITS_10MONTHSUSINGIM8_251212_PTAD_SAEDITORIAL -10%", "campaign_name": "L2 | 20251212_TOFU_GLOBAL_ASC_AUTO_L7DWINNERS_LC#1(SCALE)", "adset_name": "l7d winners (as of 5/12/25)", "spend": 10204.06, "roas": 1.8, "purchases": 81, "revenue": 18382.26, "cpa": 125.98, "ctr": 0.68, "url": "", "tier": "L2", "ad_type": "KOL UGC", "note": "KOL UGC \u2014 duplicate to winner pool", "note_type": "kol", "returning": false}, {"ad_name": "IMG_C51D_BECKHAMSTACK_NA_NA_BRAND_THEBECKHAMSTACK_251121_NA_PDP(TBS) -WINNER(SCALEDOVER)", "campaign_name": "L2 | 20251121_TOFU_GLOBAL_ASCCBO_AUTO_LC(SCALE)", "adset_name": "251121 Longevity IMG Winners", "spend": 17427.71, "roas": 1.77, "purchases": 93, "revenue": 30932.41, "cpa": 187.39, "ctr": 0.72, "url": "", "tier": "L2", "ad_type": "Static", "note": "Generic/Static \u2014 duplicate to winner pool", "note_type": "generic", "returning": false}, {"ad_name": "260331_IMG_NA_GENE_BRAND_C46_NER_NERMARW4_SAB_JACLYNSAVAGE_BEFOREYOURENEWYOURAG_WTAD_JACSAVAGEADVERTORIAL", "campaign_name": "L3 | 20260305_TOFU_GLOBAL_ASC_AUTO_JACSAVAGEADVERTORIAL_LC", "adset_name": "260331 NER Jac 1/1", "spend": 25118.49, "roas": 1.66, "purchases": 182, "revenue": 41587.4, "cpa": 138.01, "ctr": 1.79, "url": "", "tier": "L3", "ad_type": "Static", "note": "Generic/Static \u2014 duplicate to winner pool", "note_type": "generic", "returning": false}, {"ad_name": "IMG_C98C_WELCOMEKIT_NA_NA_WELCOMEKIT_DONTMISSYOURKIT_251121_NA_HOMEPAGE", "campaign_name": "L2 | 20251121_TOFU_GLOBAL_ASCCBO_AUTO_LC(SCALE)", "adset_name": "251121 Welcome Kit", "spend": 2689.19, "roas": 1.6, "purchases": 15, "revenue": 4308.16, "cpa": 179.28, "ctr": 0.98, "url": "", "tier": "L2", "ad_type": "Static", "note": "Generic/Static \u2014 duplicate to winner pool", "note_type": "generic", "returning": false}, {"ad_name": "IMG_C92A_WELCOMEKIT_NA_NA_WELCOMEKIT_CLAIMYOURKIT_260303_NA_GETPDP", "campaign_name": "L3 | 20260303_TOFU_GLOBAL_ASC_AUTO_GETPDP (NEW)(CLPT)_MT*", "adset_name": "260303 Top 50 L30D Winners > GET.PDP", "spend": 1650.9, "roas": 1.52, "purchases": 12, "revenue": 2517.52, "cpa": 137.58, "ctr": 1.2, "url": "", "tier": "L3", "ad_type": "Static", "note": "Generic/Static \u2014 duplicate to winner pool", "note_type": "generic", "returning": false}, {"ad_name": "VID_3_KOLUGC_JACLYNSAVAGE_PAID_GUTHEALTH_GUTFRIENDLYSMOOTHIE_260303_PTAD_GETPDP", "campaign_name": "L3 | 20260303_TOFU_GLOBAL_ASC_AUTO_GETPDP (NEW)(CLPT)_MT*", "adset_name": "260303 Top 50 L30D Winners > GET.PDP", "spend": 2950.2, "roas": 1.46, "purchases": 17, "revenue": 4303.3, "cpa": 173.54, "ctr": 5.57, "url": "", "tier": "L3", "ad_type": "KOL UGC", "note": "KOL UGC \u2014 duplicate to winner pool", "note_type": "kol", "returning": false}, {"ad_name": "IMG_C99C_WELCOMEKIT_NA_NA_WELCOMEKIT_YOURKITAWAITS_251121_NA_HOMEPAGE", "campaign_name": "L2 | 20251121_TOFU_GLOBAL_ASCCBO_AUTO_LC(SCALE)", "adset_name": "251121 Welcome Kit", "spend": 2229.73, "roas": 1.45, "purchases": 15, "revenue": 3233.86, "cpa": 148.65, "ctr": 0.8, "url": "", "tier": "L2", "ad_type": "Static", "note": "Generic/Static \u2014 duplicate to winner pool", "note_type": "generic", "returning": false}, {"ad_name": "IMG_C132B_EXPLOSIVEPOWDERESSENTIAL_NA_NA_PERFORMANCE_LIMITEDTIME2026DEAL_260303_NA_GETPDP", "campaign_name": "L3 | 20260303_TOFU_GLOBAL_ASC_AUTO_GETPDP (NEW)(CLPT)_MT*", "adset_name": "260303 Top 50 L30D Winners > GET.PDP", "spend": 3217.55, "roas": 1.35, "purchases": 20, "revenue": 4357.97, "cpa": 160.88, "ctr": 0.99, "url": "", "tier": "L3", "ad_type": "Static", "note": "Generic/Static \u2014 duplicate to winner pool", "note_type": "generic", "returning": false}, {"ad_name": "IMG_C36B_NERFEBW3_NA_NA_WELCOMEKIT_CLAIMYOURFREE_260319_NA_PDP", "campaign_name": "L3 | 20251128_TOFU_ROW_ASC_AUTO_p+v7day_CAP($258)(SCALE)", "adset_name": "New Sales ad set", "spend": 3867.43, "roas": 1.33, "purchases": 18, "revenue": 5127.63, "cpa": 214.86, "ctr": 1.54, "url": "", "tier": "L3", "ad_type": "Static", "note": "Generic/Static \u2014 duplicate to winner pool", "note_type": "generic", "returning": false}, {"ad_name": "VID_1_KOLUGC_MICHAELCHERNOW_PAID_ALLINONE_LASTBUTNOTLEAST_260310_PTAD_GETQUIZV2", "campaign_name": "L3 | 20260310_TOFU_GLOBAL_ASCCBO_AUTO_GETQUIZV2(NEW)(CLPT)_MT*", "adset_name": "260310 Top 50 L30D Winners > GETQUIZV2", "spend": 3565.92, "roas": 1.32, "purchases": 16, "revenue": 4693.98, "cpa": 222.87, "ctr": 2.84, "url": "", "tier": "L3", "ad_type": "KOL UGC", "note": "KOL UGC \u2014 duplicate to winner pool", "note_type": "kol", "returning": false}, {"ad_name": "VID_H4B2CTA2_KOLUGC_MONASHARMA_PAID_LONGEVITY_THISFORMULAHITSFIVE_260128_PTAD_VSL(ADVLONGEVITY) -10%", "campaign_name": "L2 | 20251121_TOFU_GLOBAL_ASCCBO_AUTO_LC(SCALE)", "adset_name": "260128 Winners", "spend": 11343.5, "roas": 1.22, "purchases": 49, "revenue": 13882.82, "cpa": 231.5, "ctr": 3.42, "url": "", "tier": "L2", "ad_type": "KOL UGC", "note": "KOL UGC \u2014 duplicate to winner pool", "note_type": "kol", "returning": false}, {"ad_name": "IMG_C101C_IM8PRODUCT_NA_NA_WELCOMEKIT_VALUEDAT60_260303_NA_GETPDP", "campaign_name": "L3 | 20260303_TOFU_GLOBAL_ASC_AUTO_GETPDP (NEW)(CLPT)_MT*", "adset_name": "260303 Top 50 L30D Winners > GET.PDP", "spend": 5134.42, "roas": 1.19, "purchases": 28, "revenue": 6096.24, "cpa": 183.37, "ctr": 0.65, "url": "", "tier": "L3", "ad_type": "Static", "note": "Generic/Static \u2014 duplicate to winner pool", "note_type": "generic", "returning": false}, {"ad_name": "260407_VID_TALKH_BIOHK_CELLULARHEALTH_1_INT_KOLUGC_KOL_DUSTINPEDERSON_MOSTGUYSARESPENDING_PTAD_SCIENCELDP*", "campaign_name": "L3 | 20260319_TOFU_US_SUPERSCALER_ASC_AUTO_IR_WINNERS_LC_MT*", "adset_name": "260607 P14D Winners + Potentials", "spend": 3399.79, "roas": 1.18, "purchases": 20, "revenue": 4021.86, "cpa": 169.99, "ctr": 2.96, "url": "", "tier": "L3", "ad_type": "KOL UGC", "note": "KOL UGC \u2014 duplicate to winner pool", "note_type": "kol", "returning": false}, {"ad_name": "VID_10_BROLLSWITHBGM_BOBBYRICH_PAID_BRAND_MONTAGE_260216_PTAD_PDP", "campaign_name": "L2 | 20251121_TOFU_GLOBAL_ASCCBO_AUTO_LC(SCALE)", "adset_name": "260215 Winners", "spend": 15365.23, "roas": 1.16, "purchases": 77, "revenue": 17768.79, "cpa": 199.55, "ctr": 1.74, "url": "", "tier": "L2", "ad_type": "Video", "note": "Generic/Static \u2014 duplicate to winner pool", "note_type": "generic", "returning": false}, {"ad_name": "IMG_C67C_WELCOMEKIT_NA_NA_WELCOMEKIT_WHATSINCLUDED_260303_NA_GETPDP", "campaign_name": "L3 | 20260303_TOFU_GLOBAL_ASC_AUTO_GETPDP (NEW)(CLPT)_MT*", "adset_name": "260303 Top 50 L30D Winners > GET.PDP", "spend": 6294.6, "roas": 1.16, "purchases": 33, "revenue": 7324.4, "cpa": 190.75, "ctr": 0.63, "url": "", "tier": "L3", "ad_type": "Static", "note": "Generic/Static \u2014 duplicate to winner pool", "note_type": "generic", "returning": false}, {"ad_name": "VID_1_KOLUGC_TAWNYJANAE_PAID_MULTIUSP_NOWONTOMYIM8_260325_PTAD_GETPDP", "campaign_name": "L2 | 20260319_TOFU_GLOBAL_ASC_AUTO_IR_L7DWINNERS_LC#2 (Prenetics 1_1)", "adset_name": "l7d winners (as of 5/12/25) (copy)", "spend": 8047.68, "roas": 1.15, "purchases": 40, "revenue": 9243.75, "cpa": 201.19, "ctr": 6.67, "url": "", "tier": "L2", "ad_type": "KOL UGC", "note": "KOL UGC \u2014 duplicate to winner pool", "note_type": "kol", "returning": false}, {"ad_name": "VID_H14B1_KOLUGC_DRARASUPPIAH_NA_LONGEVITY_WHATYOUDONTGET_260204_PTAD_VSL(LONGEVITY) -10%", "campaign_name": "L2 | 20251121_TOFU_GLOBAL_ASCCBO_AUTO_LC(SCALE)", "adset_name": "260215 Winners", "spend": 7280.94, "roas": 1.14, "purchases": 32, "revenue": 8275.39, "cpa": 227.53, "ctr": 3.48, "url": "", "tier": "L2", "ad_type": "KOL UGC", "note": "KOL UGC \u2014 duplicate to winner pool", "note_type": "kol", "returning": false}, {"ad_name": "VID_H8B3CTA2_KOLUGC_MONASHARMA_PAID_LONGEVITY_THATSWHYIMEXCITED_260128_PTAD_VSL(ADVLONGEVITY) -10%", "campaign_name": "L2 | 20251121_TOFU_GLOBAL_ASCCBO_AUTO_LC(SCALE)", "adset_name": "260128 Winners", "spend": 16309.37, "roas": 1.12, "purchases": 68, "revenue": 18211.26, "cpa": 239.84, "ctr": 1.34, "url": "", "tier": "L2", "ad_type": "KOL UGC", "note": "KOL UGC \u2014 duplicate to winner pool", "note_type": "kol", "returning": false}, {"ad_name": "260325_IMG_RVIEW_GENE_EDUCATIONAL_12_INT_IGPOST_SAB_DRJAMESDINIC_TOP10SUPPLEMENTS_WTAD_16IN1JAMES*", "campaign_name": "L3 | 20260319_TOFU_GLOBAL_CBO_AUTO_7Dclick_IR_DRJAMES_LC_MT* (IM8-USD-01)", "adset_name": "260325 Dr James Dinic (IG Posts) - 16IN1DRJAMES 2/3  > 16IN1DRJAMES Lander_ALT*", "spend": 8736.46, "roas": 1.1, "purchases": 46, "revenue": 9613.69, "cpa": 189.92, "ctr": 4.72, "url": "", "tier": "L3", "ad_type": "IG Post", "note": "Generic/Static \u2014 duplicate to winner pool", "note_type": "generic", "returning": false}, {"ad_name": "260309_VID_RVIEW_GEN_EDUCATIONAL_4_NA_SOCIALS_NA_DRJAMESDINIC_RANKINGHEALTHTRENDS_PTAD_16IN1DRJAMES*", "campaign_name": "L3 | 20260305_TOFU_GLOBAL_ASCCBO_AUTO_LC_AMB/Creator IG Post_MT*", "adset_name": "260309 Dr James DiNic(FNL)", "spend": 2090.63, "roas": 1.09, "purchases": 11, "revenue": 2276.79, "cpa": 190.06, "ctr": 5.4, "url": "", "tier": "L3", "ad_type": "Video", "note": "Generic/Static \u2014 duplicate to winner pool", "note_type": "generic", "returning": false}, {"ad_name": "260325_IMG_RVIEW_GENE_EDUCATIONAL_7_INT_IGPOST_SAB_DRJAMESDINIC_TESTOSTERONECHEAT_WTAD_16IN1JAMES*", "campaign_name": "L3 | 20260319_TOFU_GLOBAL_CBO_AUTO_7Dclick_IR_DRJAMES_LC_MT* (IM8-USD-01)", "adset_name": "260325 Dr James Dinic (IG Posts) - 16IN1DRJAMES  > 16IN1DRJAMES Lander_ALT*", "spend": 19625.23, "roas": 1.08, "purchases": 118, "revenue": 21209.45, "cpa": 166.32, "ctr": 3.95, "url": "", "tier": "L3", "ad_type": "IG Post", "note": "Generic/Static \u2014 duplicate to winner pool", "note_type": "generic", "returning": false}, {"ad_name": "VID_1_KOLUGC_DRJAMESDINIC_PAID_LONGEVITY_4BESTSUPPLEMENTSTOSLOWDOWNAGING_260205_WTAD_PDP(LONGEVITY) (DISCOUNTCODE) -10%", "campaign_name": "L3 | 20260319_TOFU_GLOBAL_CBO_AUTO_7Dclick_IR_DRJAMES_LC_MT* (IM8-USD-01)", "adset_name": "260205 Dr James Dinic VID #4  > 16IN1DRJAMES Lander_ALT*", "spend": 5119.2, "roas": 1.04, "purchases": 29, "revenue": 5327.32, "cpa": 176.52, "ctr": 7.1, "url": "", "tier": "L3", "ad_type": "KOL UGC", "note": "KOL UGC \u2014 duplicate to winner pool", "note_type": "kol", "returning": false}, {"ad_name": "IMG_C92A_WELCOMEKIT_NA_NA_WELCOMEKIT_CLAIMYOURKIT_251121_NA_HOMEPAGE", "campaign_name": "L2 | 20251121_TOFU_GLOBAL_ASCCBO_AUTO_LC(SCALE)", "adset_name": "251121 Welcome Kit", "spend": 22855.04, "roas": 1.02, "purchases": 104, "revenue": 23294.46, "cpa": 219.76, "ctr": 0.95, "url": "", "tier": "L2", "ad_type": "Static", "note": "Generic/Static \u2014 duplicate to winner pool", "note_type": "generic", "returning": false}, {"ad_name": "IMG_C40D_ESSENTIALSANDLONGEVITY_NA_NA_LONGEVITY_PAIRITWITHESSENTIALS_251121_NA_PDP(TBS)", "campaign_name": "L2 | 20251121_TOFU_GLOBAL_ASCCBO_AUTO_LC(SCALE)", "adset_name": "251121 Longevity IMG Winners", "spend": 13660.47, "roas": 1.02, "purchases": 48, "revenue": 13931.98, "cpa": 284.59, "ctr": 0.88, "url": "", "tier": "L2", "ad_type": "Static", "note": "Generic/Static \u2014 duplicate to winner pool", "note_type": "generic", "returning": false}, {"ad_name": "IMG_C11B_JARWHITE_NA_NA_SAVINGS_THE89SUPPLEMENTBILL_260303_NA_GETPDP", "campaign_name": "L3 | 20260303_TOFU_GLOBAL_ASC_AUTO_GETPDP (NEW)(CLPT)_MT*", "adset_name": "260303 Top 50 L30D Winners > GET.PDP", "spend": 11974.85, "roas": 1.02, "purchases": 55, "revenue": 12250.97, "cpa": 217.72, "ctr": 0.55, "url": "", "tier": "L3", "ad_type": "Static", "note": "Generic/Static \u2014 duplicate to winner pool", "note_type": "generic", "returning": false}, {"ad_name": "VID_2_JAMESPOST_DRJAMESDINIC_PAID_LONGEVITY_LONGEVITYCHEATSHEET_260312_PTAD_16IN1DRJAMES", "campaign_name": "L3 | 20260305_TOFU_GLOBAL_ASCCBO_AUTO_LC_AMB/Creator IG Post_MT*", "adset_name": "260309 Dr James DiNic(FNL)", "spend": 84151.43, "roas": 1.02, "purchases": 422, "revenue": 85433.8, "cpa": 199.41, "ctr": 3.86, "url": "", "tier": "L3", "ad_type": "IG Post", "note": "Generic/Static \u2014 duplicate to winner pool", "note_type": "generic", "returning": false}, {"ad_name": "VID_H13B1_KOLUGC_DRARASUPPIAH_NA_LONGEVITY_SERIOUSABOUT_260128_PTAD_VSL(LONGEVITY) -10%", "campaign_name": "L2 | 20251121_TOFU_GLOBAL_ASCCBO_AUTO_LC(SCALE)", "adset_name": "260128 Winners", "spend": 3039.83, "roas": 1.01, "purchases": 14, "revenue": 3080.76, "cpa": 217.13, "ctr": 3.22, "url": "", "tier": "L2", "ad_type": "KOL UGC", "note": "KOL UGC \u2014 duplicate to winner pool", "note_type": "kol", "returning": false}], "icp_new": [{"ad_name": "IMG_C26C_SACHETPOWDEREXPLODEINTHEDARK_NA_NA_RECOVERY_THERECOVERYCHEATSHEET_251121_NA_GETRECOVERYPROLDP", "campaign_name": "L2 | 20251121_TOFU_GLOBAL_ASCCBO_AUTO_LC(SCALE)", "adset_name": "251121 Performance/Recovery Winners", "spend": 4451.39, "roas": 1.16, "purchases": 20, "revenue": 5158.15, "cpa": 222.57, "ctr": 1.06, "url": "", "tier": "L2", "ad_type": "Static", "note": "ICP/Persona \u2014 WIN tag only, stays in campaign", "note_type": "icp", "returning": false}, {"ad_name": "260409_VID_AIVSL_GLP1_WEIGHTLOSS_V2C7_LJV_NA_NA_CONGRATSGLP1WORKED_NA_GLP1LDP*", "campaign_name": "L3 | 20260306_TOFU_GLOBAL_ASCCBO_AUTO_LC_ICP(GLP1)_MT*", "adset_name": "260306 GLP-1_ALT*", "spend": 6867.87, "roas": 1.02, "purchases": 34, "revenue": 7031.66, "cpa": 202.0, "ctr": 2.27, "url": "", "tier": "L3", "ad_type": "Video", "note": "ICP/Persona \u2014 WIN tag only, stays in campaign", "note_type": "icp", "returning": false}], "returning": [], "stats": {"new_pool": 27, "new_icp": 2, "returning": 0, "total": 29, "avg_roas": 1.25, "total_rev": 392878.03, "total_purch": 1717}};
-const f={u:v=>v>0?'$'+v.toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:0}):'—',r:v=>v.toFixed(2)+'x'};
+const RUNS = [{"tag": "WIN26APW2", "run_day": "Friday", "run_date": "2026-04-10", "tab_date": "10 Apr", "date_range": "3 Apr \u2013 10 Apr 2026", "ads": [{"ad_id": "120238578260680139", "ad_name": "260407_IMG_NA_GLP_WEIGHTLOSS_C43_NER_NERAPRW1_NA_NA_LOSINGWEIGHTISTHEGOA_NA_GLP1LDP", "campaign_name": "L3 | 20260306_TOFU_GLOBAL_ASCCBO_AUTO_LC_ICP(GLP1)_MT*", "adset_name": "260407 GLP-1#4 (NER STATICS)_ALT*", "spend": 2162.54, "roas": 1.18, "purchases": 11, "revenue": 2562.1, "cpa": 196.59, "ctr": 2.86, "thumbnail": "https://external-iad6-1.xx.fbcdn.net/emg1/v/t13/7522798146883824830?url=https%3A%2F%2Fwww.facebook.com%2Fads%2Fimage%2F%3Fd%3DAQJYuU7cc602NLswqwWTU0XDI4zGLavIjrFyt_ovwIVcxfpESu75_uWO9y0K7ROy9Ynma2mrue4WxQXc1ocTNDUIguF1koSdM1WaxyAfCY-wivYD-n7i7tKfgfLgZFXg0tdxLRFNCxHY_Vz3tCLcBFCa&fb_obo=1&utld=facebook.com&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&edm=AOgd6ZUEAAAA&_nc_gid=vTmcBbzQwMZ5OBuZUoi46A&_nc_oc=AdoY6exnJRxTmv0MtHbpKuSM_OE78i3ZNrNL-jGY79CldIK3gmEdyuryXeoGc9cj58s&ccb=13-1&oh=06_Q3--Aec3cJWZgOZZre8X9rFrZC53fdnGMUOStaVAAaaSVFyM&oe=69DAA0E1&_nc_sid=58080a", "fb_link": "https://www.facebook.com/permalink.php?story_fbid=122170214318905450&id=683327568197335", "tier": "L3", "ad_type": "Static", "note": "ICP/Persona \u2014 tag only", "note_type": "icp", "lp": "https://get.im8health.com/pages/glp1", "tagged": false}, {"ad_id": "120232886388490139", "ad_name": "IMG_C26C_SACHETPOWDEREXPLODEINTHEDARK_NA_NA_RECOVERY_THERECOVERYCHEATSHEET_251121_NA_GETRECOVERYPROLDP", "campaign_name": "L2 | 20251121_TOFU_GLOBAL_ASCCBO_AUTO_LC(SCALE)", "adset_name": "251121 Performance/Recovery Winners", "spend": 4457.43, "roas": 1.16, "purchases": 20, "revenue": 5158.15, "cpa": 222.87, "ctr": 1.06, "thumbnail": "https://external-iad6-1.xx.fbcdn.net/emg1/v/t13/12526731475790074774?url=https%3A%2F%2Fwww.facebook.com%2Fads%2Fimage%2F%3Fd%3DAQJsh8MmmWARptHpebIY1VavGxWUjCrXRxdrcfRy70dXGorzBkPnqJSLI2gBRdNEXZJPw_LjEjfFJPyhriRTxepA21PtOzDN-9iQYs7YTptLwencdEwysmYxKl2DjZHSyBEY-tiNgOQ-PBhgPAGi7jJZ&fb_obo=1&utld=facebook.com&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&edm=AOgd6ZUEAAAA&_nc_gid=vTmcBbzQwMZ5OBuZUoi46A&_nc_oc=Adoqq7jfjIrR-77t7xOE1YduchCvH-gjayxRkQl_5WzK6PRjnyZ-Y45mtUpzc5y9uWg&ccb=13-1&oh=06_Q3--AT8ntnHYAootrh5Gumj6J7-0r3Rq0oV5kV7o5-bttrlX&oe=69DA7E76&_nc_sid=58080a", "fb_link": "https://www.facebook.com/permalink.php?story_fbid=122178848762929400&id=635362669669865", "tier": "L2", "ad_type": "Static", "note": "ICP/Persona \u2014 tag only", "note_type": "icp", "lp": "", "tagged": false}, {"ad_id": "120238682031870139", "ad_name": "260409_VID_AIVSL_GLP1_WEIGHTLOSS_V2C7_LJV_NA_NA_CONGRATSGLP1WORKED_NA_GLP1LDP*", "campaign_name": "L3 | 20260306_TOFU_GLOBAL_ASCCBO_AUTO_LC_ICP(GLP1)_MT*", "adset_name": "260306 GLP-1_ALT*", "spend": 6913.52, "roas": 1.02, "purchases": 34, "revenue": 7031.66, "cpa": 203.34, "ctr": 2.27, "thumbnail": "https://scontent-iad6-1.xx.fbcdn.net/v/t15.5256-10/669704637_1312506547417829_7729632832630782511_n.jpg?_nc_cat=102&ccb=1-7&_nc_ohc=wUqZS5DOqJkQ7kNvwG490vc&_nc_oc=Adr7YhIW3scx-TUSS6gBRW4q7La87-GJwby09sb0kxcipZfK1vqIujuWZdO393mm03M&_nc_zt=23&_nc_ht=scontent-iad6-1.xx&edm=AOgd6ZUEAAAA&_nc_gid=vTmcBbzQwMZ5OBuZUoi46A&_nc_tpa=Q5bMBQEzWWjseklVqcSlXvmuG2X45LfJ6Eb103MM8inuqscsRzMWTesRP8uDMAv5AkpU-QCODBfgD0hwng&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&ur=d2b52d&_nc_sid=58080a&oh=00_Af3lCSsF7qzAeMtLbcme6VFiFT3unH4DD8_HZoK9OBAWMw&oe=69DE7BE8", "fb_link": "https://www.facebook.com/permalink.php?story_fbid=122197995056396650&id=345914995276546", "tier": "L3", "ad_type": "Video", "note": "ICP/Persona \u2014 tag only", "note_type": "icp", "lp": "https://get.im8health.com/pages/glp1", "tagged": false}, {"ad_id": "120233551902850139", "ad_name": "VID_1_KOLUGC_TAVICASTRO_PAID_HEALTHBENEFITS_10MONTHSUSINGIM8_251212_PTAD_SAEDITORIAL -10%", "campaign_name": "L2 | 20251212_TOFU_GLOBAL_ASC_AUTO_L7DWINNERS_LC#1(SCALE)", "adset_name": "l7d winners (as of 5/12/25)", "spend": 10229.18, "roas": 1.8, "purchases": 81, "revenue": 18382.26, "cpa": 126.29, "ctr": 0.68, "thumbnail": "https://scontent-iad3-2.xx.fbcdn.net/v/t15.5256-10/599545577_1408516194232617_2043131735045428392_n.jpg?_nc_cat=103&ccb=1-7&_nc_ohc=aRxbJBTAcHoQ7kNvwFzbYUz&_nc_oc=AdrrJvOcYJngGnRq1VENd5spbUE3TPmw1KjVpRpASGCHbL-_ZC4HFv2k3zZtKEEm-is&_nc_zt=23&_nc_ht=scontent-iad3-2.xx&edm=AOgd6ZUEAAAA&_nc_gid=vTmcBbzQwMZ5OBuZUoi46A&_nc_tpa=Q5bMBQHL9T1EqRfAisKqQwo8EWRZ1R6iz6jhOsyXqNckELj7oNqpFQpABu-JQ794-JZbODMm593Yf1u07g&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&ur=afbe02&_nc_sid=58080a&oh=00_Af2yyi_UY8OpjRMInjcjRc9zk7fS2bJP5HcneswNSNPqBw&oe=69DE9821", "fb_link": "https://www.facebook.com/permalink.php?story_fbid=1408516160899287&id=255887897846432", "tier": "L2", "ad_type": "KOL UGC", "note": "KOL UGC \u2014 dupe to pool", "note_type": "kol", "lp": "", "tagged": false}, {"ad_id": "120232885823920139", "ad_name": "IMG_C51D_BECKHAMSTACK_NA_NA_BRAND_THEBECKHAMSTACK_251121_NA_PDP(TBS) -WINNER(SCALEDOVER)", "campaign_name": "L2 | 20251121_TOFU_GLOBAL_ASCCBO_AUTO_LC(SCALE)", "adset_name": "251121 Longevity IMG Winners", "spend": 17446.37, "roas": 1.77, "purchases": 93, "revenue": 30932.41, "cpa": 187.6, "ctr": 0.72, "thumbnail": "https://external-iad6-1.xx.fbcdn.net/emg1/v/t13/17478313837292707399?url=https%3A%2F%2Fwww.facebook.com%2Fads%2Fimage%2F%3Fd%3DAQLyr4pLz5Moo6YHr9daQVc0qpPYKKv1NUMIYle1BtJ67L3Fg9j3D34Wq2ZNXKuMhCxwJ-wt-M19ix05l_Ccd-6uOnigXOubCknmDqAbBqa-gwZxuMNyq8ZxzgNm2G-5mu0SBUurnbzcOBod4ORFtlzA&fb_obo=1&utld=facebook.com&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&edm=AOgd6ZUEAAAA&_nc_gid=vTmcBbzQwMZ5OBuZUoi46A&_nc_oc=Adqc8gzypN67l_Bq3WjWN2zOGou11555OXSvjGaagmrylwpK0fho5xlC6YFUeULbiQY&ccb=13-1&oh=06_Q3--AWKdXaue-Jyc9QK6e0Sl59qfHsHv2M_evTcwduFKRsOP&oe=69DA7CFE&_nc_sid=58080a", "fb_link": "https://www.facebook.com/permalink.php?story_fbid=122138329694945547&id=696753946860832", "tier": "L2", "ad_type": "Static", "note": "Generic \u2014 dupe to pool", "note_type": "generic", "lp": "", "tagged": false}, {"ad_id": "120238304747540139", "ad_name": "260331_IMG_NA_GENE_BRAND_C46_NER_NERMARW4_SAB_JACLYNSAVAGE_BEFOREYOURENEWYOURAG_WTAD_JACSAVAGEADVERTORIAL", "campaign_name": "L3 | 20260305_TOFU_GLOBAL_ASC_AUTO_JACSAVAGEADVERTORIAL_LC", "adset_name": "260331 NER Jac 1/1", "spend": 25118.49, "roas": 1.66, "purchases": 182, "revenue": 41587.4, "cpa": 138.01, "ctr": 1.79, "thumbnail": "https://external-iad6-1.xx.fbcdn.net/emg1/v/t13/12670051838888240910?url=https%3A%2F%2Fwww.facebook.com%2Fads%2Fimage%2F%3Fd%3DAQLxZt1O_p3s6VoSrVEp78W7xKbgWsiplMQwdkaR95SZyZdsL8j_5Ny8_aOuxGKH_Kc5Ud2KWkdjj-FLHdybww_0qE2c-hbMSo_bNkwcIKyM9fqLOSIrpnvd8dHhoUBDlfGTvflZUNfMf0OEhuyxMqlU&fb_obo=1&utld=facebook.com&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&edm=AOgd6ZUEAAAA&_nc_gid=vTmcBbzQwMZ5OBuZUoi46A&_nc_oc=AdozUUmk6k0wjbpJwktXfG3xfCV-KIt6_T08SJHX-sSFurLkMZtJHtTYvYf2-DO5mpQ&ccb=13-1&oh=06_Q3--AYPj5GP50wPPhtJrhOk8vhIcjSjefF-HJCZCzcIb_hiv&oe=69DAA652&_nc_sid=58080a", "fb_link": "https://www.facebook.com/permalink.php?story_fbid=1288606723282230&id=141147758124381", "tier": "L3", "ad_type": "Static", "note": "Generic \u2014 dupe to pool", "note_type": "generic", "lp": "", "tagged": false}, {"ad_id": "120232885091200139", "ad_name": "IMG_C98C_WELCOMEKIT_NA_NA_WELCOMEKIT_DONTMISSYOURKIT_251121_NA_HOMEPAGE", "campaign_name": "L2 | 20251121_TOFU_GLOBAL_ASCCBO_AUTO_LC(SCALE)", "adset_name": "251121 Welcome Kit", "spend": 2691.86, "roas": 1.6, "purchases": 15, "revenue": 4308.16, "cpa": 179.46, "ctr": 0.98, "thumbnail": "https://external-iad6-1.xx.fbcdn.net/emg1/v/t13/15879727786874525000?url=https%3A%2F%2Fwww.facebook.com%2Fads%2Fimage%2F%3Fd%3DAQKykTAokfExDzZet2-h0VN6T0LFeP2JnioiwusokkRcYjg8y86Htsu67uzTY872MqmrBE5KjOpD8dSNHTYU_faobJuL9IE50_azcEUjyJRzvoxXoKXr-NLvQAKzswpnUFHF3VM4yf81iOdH4lEOKIeX&fb_obo=1&utld=facebook.com&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&edm=AOgd6ZUEAAAA&_nc_gid=vTmcBbzQwMZ5OBuZUoi46A&_nc_oc=AdrAGIT8SaueffWwlTijCtDMXc31VVZB0mVbCfzP10eZzwzxqphRzOJN4orhBakmn7s&ccb=13-1&oh=06_Q3--AR_KeeQgltWjOtbFLZ85FfaaL5m8bk4_SeDZYJDQRHna&oe=69DA9F71&_nc_sid=58080a", "fb_link": "https://www.facebook.com/permalink.php?story_fbid=122147549390905450&id=683327568197335", "tier": "L2", "ad_type": "Static", "note": "Generic \u2014 dupe to pool", "note_type": "generic", "lp": "https://im8health.com/", "tagged": false}, {"ad_id": "120237121687840139", "ad_name": "IMG_C92A_WELCOMEKIT_NA_NA_WELCOMEKIT_CLAIMYOURKIT_260303_NA_GETPDP", "campaign_name": "L3 | 20260303_TOFU_GLOBAL_ASC_AUTO_GETPDP (NEW)(CLPT)_MT*", "adset_name": "260303 Top 50 L30D Winners > GET.PDP", "spend": 1656.73, "roas": 1.52, "purchases": 12, "revenue": 2517.52, "cpa": 138.06, "ctr": 1.2, "thumbnail": "https://external-iad6-1.xx.fbcdn.net/emg1/v/t13/3125208060379775646?url=https%3A%2F%2Fwww.facebook.com%2Fads%2Fimage%2F%3Fd%3DAQI4nXx3muqJ2SdoDROpeRs6VX9xohIkcNFhIhgtiXNAS8ntsq3baQc__Mv8NlOP6-KAhWspHaxPWtWl-Qdc48pjrmn74bA4309HDDDaKVKdR67BZfol_WEEQ7H0jNGxfKUlSMfX2kRRij19lBE0x5J0&fb_obo=1&utld=facebook.com&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&edm=AOgd6ZUEAAAA&_nc_gid=vTmcBbzQwMZ5OBuZUoi46A&_nc_oc=AdqK_1HQmekJ_lrN9hH_9-Nj1IEtyom2BVWC-rK46VUQQuFj8klRTXwbIrzJnnmJ1HM&ccb=13-1&oh=06_Q3--ATYKHxePbMYoKsbcivoqR7le6SURs9I-Or8B3RE95_De&oe=69DA86D5&_nc_sid=58080a", "fb_link": "https://www.facebook.com/permalink.php?story_fbid=122192310884396650&id=345914995276546", "tier": "L3", "ad_type": "Static", "note": "Generic \u2014 dupe to pool", "note_type": "generic", "lp": "https://get.im8health.com/essentials", "tagged": false}, {"ad_id": "120237121691240139", "ad_name": "VID_3_KOLUGC_JACLYNSAVAGE_PAID_GUTHEALTH_GUTFRIENDLYSMOOTHIE_260303_PTAD_GETPDP", "campaign_name": "L3 | 20260303_TOFU_GLOBAL_ASC_AUTO_GETPDP (NEW)(CLPT)_MT*", "adset_name": "260303 Top 50 L30D Winners > GET.PDP", "spend": 2953.62, "roas": 1.46, "purchases": 17, "revenue": 4303.3, "cpa": 173.74, "ctr": 5.57, "thumbnail": "https://scontent-iad6-1.xx.fbcdn.net/v/t15.5256-10/645682735_4597143200569410_7049164017721182584_n.jpg?_nc_cat=100&ccb=1-7&_nc_ohc=pbdZIc10zlYQ7kNvwFp8K5Z&_nc_oc=Adr5yPaCixrTf7hIWGCsHuGwbFaSDewA18Ah6dEPoREpwfYWj8p-c_HYVESXXdEb0XA&_nc_zt=23&_nc_ht=scontent-iad6-1.xx&edm=AOgd6ZUEAAAA&_nc_gid=vTmcBbzQwMZ5OBuZUoi46A&_nc_tpa=Q5bMBQH8Ne9GTSm18spVfGVtPTsXkmiSLDgLaYGA5EUfuq4kOWzji1jOcMgprUc30CCZoekVI9pT9KjEjQ&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&ur=afbe02&_nc_sid=58080a&oh=00_Af1P7yK5ul3h-cbV79nmZjBwvq2jcjA5ac7xQgvHQ1NG-g&oe=69DE7C9D", "fb_link": "https://www.facebook.com/permalink.php?story_fbid=4597143170569413&id=141147758124381", "tier": "L3", "ad_type": "KOL UGC", "note": "KOL UGC \u2014 dupe to pool", "note_type": "kol", "lp": "https://get.im8health.com/essentials", "tagged": false}, {"ad_id": "120232885090220139", "ad_name": "IMG_C99C_WELCOMEKIT_NA_NA_WELCOMEKIT_YOURKITAWAITS_251121_NA_HOMEPAGE", "campaign_name": "L2 | 20251121_TOFU_GLOBAL_ASCCBO_AUTO_LC(SCALE)", "adset_name": "251121 Welcome Kit", "spend": 2234.69, "roas": 1.45, "purchases": 15, "revenue": 3233.86, "cpa": 148.98, "ctr": 0.8, "thumbnail": "https://external-iad6-1.xx.fbcdn.net/emg1/v/t13/1923286735314477581?url=https%3A%2F%2Fwww.facebook.com%2Fads%2Fimage%2F%3Fd%3DAQLIZ5mQP_ZGogiDEqpT18giDvwtHP2vQ19qBzo0EDhfsa88MaGKN2s1Tbf1fREmV9guEqMVtTbveBCU80oHG39tJ43MAvdC8SqtawPzN7g1BAZw69Fej1W-m4002OjywQ2rVEa7HV3tGOIYU9KSLcqu&fb_obo=1&utld=facebook.com&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&edm=AOgd6ZUEAAAA&_nc_gid=vTmcBbzQwMZ5OBuZUoi46A&_nc_oc=AdqKMQfY_xy3MOd7hE4jGk6QdiWMTMfC6CuPVai5f6HRqZR1qDD3dbL_2fz1o7KIouA&ccb=13-1&oh=06_Q3--AfU6fWUxCaotT38rai_YM7kWvNTvPMev6xH0aw34snQx&oe=69DA8A57&_nc_sid=58080a", "fb_link": "https://www.facebook.com/permalink.php?story_fbid=122147549378905450&id=683327568197335", "tier": "L2", "ad_type": "Static", "note": "Generic \u2014 dupe to pool", "note_type": "generic", "lp": "https://im8health.com/", "tagged": false}, {"ad_id": "120237359839030139", "ad_name": "VID_1_KOLUGC_MICHAELCHERNOW_PAID_ALLINONE_LASTBUTNOTLEAST_260310_PTAD_GETQUIZV2", "campaign_name": "L3 | 20260310_TOFU_GLOBAL_ASCCBO_AUTO_GETQUIZV2(NEW)(CLPT)_MT*", "adset_name": "260310 Top 50 L30D Winners > GETQUIZV2", "spend": 3573.36, "roas": 1.37, "purchases": 17, "revenue": 4905.48, "cpa": 210.2, "ctr": 2.84, "thumbnail": "https://scontent-iad3-1.xx.fbcdn.net/v/t15.5256-10/649400133_3290033267837781_3751637119237707956_n.jpg?_nc_cat=108&ccb=1-7&_nc_ohc=bLEfvOhFFAcQ7kNvwEz25Ne&_nc_oc=AdqgOihRpVhkKWghtCNG_gXp26wgC0myoiszrmr3LkEwrRkEHDcKPvjjfrf4_OhMasE&_nc_zt=23&_nc_ht=scontent-iad3-1.xx&edm=AOgd6ZUEAAAA&_nc_gid=vTmcBbzQwMZ5OBuZUoi46A&_nc_tpa=Q5bMBQGbdtpzUgwbjbphZVrniDC8DccOe_R_BvlFpu4ILO6wwJFYebTkS2rInDCVZb7O7xSDiT2BLRLw4A&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&ur=afbe02&_nc_sid=58080a&oh=00_Af03pBeYjxdBbl7na0lzbc69sMAAqnNQ9BVtpN5JNGVC_g&oe=69DE71E6", "fb_link": "https://www.facebook.com/permalink.php?story_fbid=3290033227837785&id=276899799101810", "tier": "L3", "ad_type": "KOL UGC", "note": "KOL UGC \u2014 dupe to pool", "note_type": "kol", "lp": "", "tagged": false}, {"ad_id": "120237121687710139", "ad_name": "IMG_C132B_EXPLOSIVEPOWDERESSENTIAL_NA_NA_PERFORMANCE_LIMITEDTIME2026DEAL_260303_NA_GETPDP", "campaign_name": "L3 | 20260303_TOFU_GLOBAL_ASC_AUTO_GETPDP (NEW)(CLPT)_MT*", "adset_name": "260303 Top 50 L30D Winners > GET.PDP", "spend": 3220.64, "roas": 1.35, "purchases": 20, "revenue": 4357.97, "cpa": 161.03, "ctr": 0.99, "thumbnail": "https://external-iad6-1.xx.fbcdn.net/emg1/v/t13/5304814374861073326?url=https%3A%2F%2Fwww.facebook.com%2Fads%2Fimage%2F%3Fd%3DAQJLJg-ga_PDQpzDzDYVqRfdnWYajlZ3U289dK-LJvWUKBmnbOoe1-wY-Us9Huh0bKepW6QFFh2sEd9XJDaehT5vzTU2sl5RPpJSZEO43j6EwEMfcwsi-63Od14Uc4ANj7Vm3cXTgu5CvPyTdQ8W0eVd&fb_obo=1&utld=facebook.com&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&edm=AOgd6ZUEAAAA&_nc_gid=vTmcBbzQwMZ5OBuZUoi46A&_nc_oc=AdpZ4pPDiJCnmzo1S1nBWMWyWG-UsgyMXKEjeFuJicwN8zg_ULhIdBQYZZUAV3r5w5E&ccb=13-1&oh=06_Q3--AcM-nzIj4jdW_umv_L307yaouwj0G0upc3rBrOa_6c5i&oe=69DA8B6F&_nc_sid=58080a", "fb_link": "https://www.facebook.com/permalink.php?story_fbid=122192295590396650&id=345914995276546", "tier": "L3", "ad_type": "Static", "note": "Generic \u2014 dupe to pool", "note_type": "generic", "lp": "https://get.im8health.com/essentials", "tagged": false}, {"ad_id": "120237724799340139", "ad_name": "IMG_C36B_NERFEBW3_NA_NA_WELCOMEKIT_CLAIMYOURFREE_260319_NA_PDP", "campaign_name": "L3 | 20251128_TOFU_ROW_ASC_AUTO_p+v7day_CAP($258)(SCALE)", "adset_name": "New Sales ad set", "spend": 3874.93, "roas": 1.32, "purchases": 18, "revenue": 5127.63, "cpa": 215.27, "ctr": 1.54, "thumbnail": "https://external-iad6-1.xx.fbcdn.net/emg1/v/t13/2500087750823448062?url=https%3A%2F%2Fwww.facebook.com%2Fads%2Fimage%2F%3Fd%3DAQKQXTQ5B8OTDky2e_Mif3kyDL5l-XVVp0pft_KKwwqAOvIL1VuC5U_SKXAD2iio03ieG6dxYHNCWnlE9qQe785WzwsYxJfb5S_-mGWG55ke1sJ02Y2CSF5K0hujnEkfKHISQ2xFiijCV0XRjsJvm-1N&fb_obo=1&utld=facebook.com&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&edm=AOgd6ZUEAAAA&_nc_gid=vTmcBbzQwMZ5OBuZUoi46A&_nc_oc=AdrYApQsY0pYUqz4V_vcEl_u8iWc3a6c9Z0xyc9uUTP98T7Sxf8K0V9uz2AeEFRGbx8&ccb=13-1&oh=06_Q3--AVyvfwq7Kd3Te_uWQZmtIhsMLAt1OGoeUAtEydKSvNTq&oe=69DA927B&_nc_sid=58080a", "fb_link": "https://www.facebook.com/permalink.php?story_fbid=122194924634396650&id=345914995276546", "tier": "L3", "ad_type": "Static", "note": "Generic \u2014 dupe to pool", "note_type": "generic", "lp": "https://im8health.com/products/essentials", "tagged": false}, {"ad_id": "120235839162010139", "ad_name": "VID_H4B2CTA2_KOLUGC_MONASHARMA_PAID_LONGEVITY_THISFORMULAHITSFIVE_260128_PTAD_VSL(ADVLONGEVITY) -10%", "campaign_name": "L2 | 20251121_TOFU_GLOBAL_ASCCBO_AUTO_LC(SCALE)", "adset_name": "260128 Winners", "spend": 11370.7, "roas": 1.24, "purchases": 50, "revenue": 14047.52, "cpa": 227.41, "ctr": 3.42, "thumbnail": "https://scontent-iad6-1.xx.fbcdn.net/v/t15.5256-10/622997740_2173490436791857_2918471265410536602_n.jpg?_nc_cat=106&ccb=1-7&_nc_ohc=Pvvffb401X4Q7kNvwHGqDgm&_nc_oc=AdrDVqnHFQmGEQiGRkBgStSVmMBF3uW7Gbm8Am83sulYBNgko0NzafgGg4dJYo-anRo&_nc_zt=23&_nc_ht=scontent-iad6-1.xx&edm=AOgd6ZUEAAAA&_nc_gid=vTmcBbzQwMZ5OBuZUoi46A&_nc_tpa=Q5bMBQHs_Q7mJRRXDTDo7tpxUW-9MU7_Gda5mika_-vki_4CIH0pFQFaaiDfOE5IDJeF7qYIx4erglNG_Q&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&ur=afbe02&_nc_sid=58080a&oh=00_Af3Q5XwZcmeCa4xlm44M_BkexWb5I9qOTvR5l0QX933Fjg&oe=69DE7F1B", "fb_link": "https://www.facebook.com/permalink.php?story_fbid=2173490423458525&id=367649756950781", "tier": "L2", "ad_type": "KOL UGC", "note": "KOL UGC \u2014 dupe to pool", "note_type": "kol", "lp": "", "tagged": false}, {"ad_id": "120237122168600139", "ad_name": "IMG_C101C_IM8PRODUCT_NA_NA_WELCOMEKIT_VALUEDAT60_260303_NA_GETPDP", "campaign_name": "L3 | 20260303_TOFU_GLOBAL_ASC_AUTO_GETPDP (NEW)(CLPT)_MT*", "adset_name": "260303 Top 50 L30D Winners > GET.PDP", "spend": 5140.34, "roas": 1.19, "purchases": 28, "revenue": 6096.24, "cpa": 183.58, "ctr": 0.65, "thumbnail": "https://scontent-iad6-1.xx.fbcdn.net/v/t45.1600-4/645632361_122164583672865858_2035972211958844360_n.jpg?_nc_cat=107&ccb=1-7&_nc_ohc=Q31FqgCG524Q7kNvwH2Rrpa&_nc_oc=Adpim2g9o_H0OxQ12SCd6nZgCr2qy-xsA48ywV9Uv3gKYhLyXYRMxrBXLkgvXTw0xSg&_nc_zt=1&_nc_ht=scontent-iad6-1.xx&edm=AOgd6ZUEAAAA&_nc_gid=vTmcBbzQwMZ5OBuZUoi46A&_nc_tpa=Q5bMBQFCcBfr5fr3U7SSBLqikTvau2wEREMnphqJ4rbXur0WXAZX7vYzHiVjEx0_1rDoYlmgOEueqo_sHw&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&ur=52f3c4&_nc_sid=58080a&oh=00_Af1mr7WmpQvWpV3emSxGnrzINdqg7_xHXTzlurwY-YxUxw&oe=69DE69C6", "fb_link": "https://www.facebook.com/permalink.php?story_fbid=122192310932396650&id=345914995276546", "tier": "L3", "ad_type": "Static", "note": "Generic \u2014 dupe to pool", "note_type": "generic", "lp": "https://get.im8health.com/essentials", "tagged": false}, {"ad_id": "120236516020490139", "ad_name": "VID_10_BROLLSWITHBGM_BOBBYRICH_PAID_BRAND_MONTAGE_260216_PTAD_PDP", "campaign_name": "L2 | 20251121_TOFU_GLOBAL_ASCCBO_AUTO_LC(SCALE)", "adset_name": "260215 Winners", "spend": 15392.96, "roas": 1.18, "purchases": 78, "revenue": 18087.02, "cpa": 197.35, "ctr": 1.74, "thumbnail": "https://scontent-iad3-1.xx.fbcdn.net/v/t15.5256-10/636836377_2391370491309254_2136898287428928534_n.jpg?_nc_cat=108&ccb=1-7&_nc_ohc=K6NsYxp1geQQ7kNvwFQONiX&_nc_oc=AdrnJN4nWI2MxuqtvqF6-JURM12FtIuGZsexMYhCR9w_oxtgpvI86FaZPTorNTKs9hg&_nc_zt=23&_nc_ht=scontent-iad3-1.xx&edm=AOgd6ZUEAAAA&_nc_gid=vTmcBbzQwMZ5OBuZUoi46A&_nc_tpa=Q5bMBQHq8Tap9cdRmPilINICLFncWAul-nDNgTV8Ttg_3wRyK0v391ABZQH1clgKSKvaVugFC64wYahsEg&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&ur=afbe02&_nc_sid=58080a&oh=00_Af0DQyY0eeqTu_a2wP_avtee5DlI2H_KY6j3jj90iw009A&oe=69DE94AA", "fb_link": "https://www.facebook.com/permalink.php?story_fbid=2391370457975924&id=589097534290607", "tier": "L2", "ad_type": "Video", "note": "Generic \u2014 dupe to pool", "note_type": "generic", "lp": "https://im8health.com/products/essentials", "tagged": false}, {"ad_id": "120238614224640139", "ad_name": "260407_VID_TALKH_BIOHK_CELLULARHEALTH_1_INT_KOLUGC_KOL_DUSTINPEDERSON_MOSTGUYSARESPENDING_PTAD_SCIENCELDP*", "campaign_name": "L3 | 20260319_TOFU_US_SUPERSCALER_ASC_AUTO_IR_WINNERS_LC_MT*", "adset_name": "260607 P14D Winners + Potentials", "spend": 3400.28, "roas": 1.18, "purchases": 20, "revenue": 4021.86, "cpa": 170.01, "ctr": 2.96, "thumbnail": "https://scontent-iad3-1.xx.fbcdn.net/v/t15.5256-10/666003531_2110022783172466_9180337775847333554_n.jpg?_nc_cat=101&ccb=1-7&_nc_ohc=mVfCzl0SnogQ7kNvwEdETP1&_nc_oc=AdpMh3F3KSOMNa1tPQj6drbthlVnozr7sfYgcg9v4SQ3It-bcF8ClWexazNHN4H-RfY&_nc_zt=23&_nc_ht=scontent-iad3-1.xx&edm=AOgd6ZUEAAAA&_nc_gid=vTmcBbzQwMZ5OBuZUoi46A&_nc_tpa=Q5bMBQHKfOb9Dfu8JPYLu3a2h0wxRCYlitGAx95Z6COHi9J_IgI7XDD3uqo3axVmkVoqmO-Hm7-Ulphybw&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&ur=a7ce7f&_nc_sid=58080a&oh=00_Af1Fo5nTXpu7zFBn3bx4zLG4JpOPvqGPkn--RZGgMF9vDQ&oe=69DE9AE1", "fb_link": "https://www.facebook.com/permalink.php?story_fbid=2110022756505802&id=374593339609836", "tier": "L3", "ad_type": "KOL UGC", "note": "KOL UGC \u2014 dupe to pool", "note_type": "kol", "lp": "https://get.im8health.com/pages/science", "tagged": false}, {"ad_id": "120237122240460139", "ad_name": "IMG_C67C_WELCOMEKIT_NA_NA_WELCOMEKIT_WHATSINCLUDED_260303_NA_GETPDP", "campaign_name": "L3 | 20260303_TOFU_GLOBAL_ASC_AUTO_GETPDP (NEW)(CLPT)_MT*", "adset_name": "260303 Top 50 L30D Winners > GET.PDP", "spend": 6302.7, "roas": 1.16, "purchases": 33, "revenue": 7324.4, "cpa": 190.99, "ctr": 0.63, "thumbnail": "https://scontent-iad3-1.xx.fbcdn.net/v/t45.1600-4/646709627_122164583690865858_652980116340400738_n.jpg?_nc_cat=110&ccb=1-7&_nc_ohc=iIal8ao6eH4Q7kNvwEy7ASr&_nc_oc=AdrYL4VSFOujdm-Rw51U10Tjuk5PBAvF-yaCqHH7x5LFMBAQSzWGavhNRzSDRF5gJu0&_nc_zt=1&_nc_ht=scontent-iad3-1.xx&edm=AOgd6ZUEAAAA&_nc_gid=vTmcBbzQwMZ5OBuZUoi46A&_nc_tpa=Q5bMBQGdhZRtz0x528vM4j8o50E7l5fnH5iB_eJWVEfmCuHybogu6ahak-dA8blClT1j3SvSup113kdXMA&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&ur=52f3c4&_nc_sid=58080a&oh=00_Af3ehE0ksLfrw8B3yV9dlYqOK0S5yd8QVc7e6znXRfr7_A&oe=69DE7B33", "fb_link": "https://www.facebook.com/permalink.php?story_fbid=122192310926396650&id=345914995276546", "tier": "L3", "ad_type": "Static", "note": "Generic \u2014 dupe to pool", "note_type": "generic", "lp": "https://get.im8health.com/essentials", "tagged": false}, {"ad_id": "120237955050800139", "ad_name": "VID_1_KOLUGC_TAWNYJANAE_PAID_MULTIUSP_NOWONTOMYIM8_260325_PTAD_GETPDP", "campaign_name": "L2 | 20260319_TOFU_GLOBAL_ASC_AUTO_IR_L7DWINNERS_LC#2 (Prenetics 1_1)", "adset_name": "l7d winners (as of 5/12/25) (copy)", "spend": 8055.76, "roas": 1.15, "purchases": 40, "revenue": 9243.75, "cpa": 201.39, "ctr": 6.68, "thumbnail": "https://scontent-iad3-1.xx.fbcdn.net/v/t15.5256-10/658838984_1603591690903350_2653728149275521564_n.jpg?_nc_cat=108&ccb=1-7&_nc_ohc=EWKeTkYf6tQQ7kNvwHdywtJ&_nc_oc=Adp6-fEUrIbwOM87u-qQS4fNfiqWx0VOxLZNu9O1Jl-lkc3CQnAzPTkc-PphY8dVdZw&_nc_zt=23&_nc_ht=scontent-iad3-1.xx&edm=AOgd6ZUEAAAA&_nc_gid=vTmcBbzQwMZ5OBuZUoi46A&_nc_tpa=Q5bMBQE0mnqYJlT7IB3dEi4uO14JvNz1y1QlHcGQsaDzuIJJMuoa-Ks0XisM13n9hdkdXhPdaM4EHp8WNg&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&ur=afbe02&_nc_sid=58080a&oh=00_Af03wTHWUYj2ACuPxALcVK2xHPxhbzbsK_FvRrIByuuheg&oe=69DE88C2", "fb_link": "https://www.facebook.com/permalink.php?story_fbid=1603591677570018&id=165051897382497", "tier": "L2", "ad_type": "KOL UGC", "note": "KOL UGC \u2014 dupe to pool", "note_type": "kol", "lp": "https://get.im8health.com/essentials", "tagged": false}, {"ad_id": "120238073451460139", "ad_name": "VID_H14B1_KOLUGC_DRARASUPPIAH_NA_LONGEVITY_WHATYOUDONTGET_260204_PTAD_VSL(LONGEVITY) -10%", "campaign_name": "L2 | 20251121_TOFU_GLOBAL_ASCCBO_AUTO_LC(SCALE)", "adset_name": "260215 Winners", "spend": 7294.88, "roas": 1.13, "purchases": 32, "revenue": 8275.39, "cpa": 227.97, "ctr": 3.48, "thumbnail": "https://scontent-iad3-1.xx.fbcdn.net/v/t15.5256-10/628443754_1409088690713680_405113845391464300_n.jpg?_nc_cat=108&ccb=1-7&_nc_ohc=zs0KqNjC7sAQ7kNvwFUgOBi&_nc_oc=Ado72_VlZGAE0i_M655DYm9FGG5iBABdcO4Bou2X5e5_ba6DdiXfcz8QZfYFsbRnXw8&_nc_zt=23&_nc_ht=scontent-iad3-1.xx&edm=AOgd6ZUEAAAA&_nc_gid=vTmcBbzQwMZ5OBuZUoi46A&_nc_tpa=Q5bMBQEsycMCakfxXQn0FnnpdySn5MrxjXG_StRBLMedJveZSqKZ4Xk2B8i1gV4UiZMj_M-AVBEnygnH5w&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&ur=afbe02&_nc_sid=58080a&oh=00_Af0zYhCwqKa8vgQ3SFdkJLmOCNW4zuL1pH8WOZG8HGkg-A&oe=69DE7B2F", "fb_link": "https://www.facebook.com/permalink.php?story_fbid=1409088657380350&id=121489488058961", "tier": "L2", "ad_type": "KOL UGC", "note": "KOL UGC \u2014 dupe to pool", "note_type": "kol", "lp": "", "tagged": false}, {"ad_id": "120235839161630139", "ad_name": "VID_H8B3CTA2_KOLUGC_MONASHARMA_PAID_LONGEVITY_THATSWHYIMEXCITED_260128_PTAD_VSL(ADVLONGEVITY) -10%", "campaign_name": "L2 | 20251121_TOFU_GLOBAL_ASCCBO_AUTO_LC(SCALE)", "adset_name": "260128 Winners", "spend": 16331.07, "roas": 1.12, "purchases": 68, "revenue": 18211.26, "cpa": 240.16, "ctr": 1.34, "thumbnail": "https://scontent-iad6-1.xx.fbcdn.net/v/t15.5256-10/622997740_1404448531177268_5674940567014525398_n.jpg?_nc_cat=100&ccb=1-7&_nc_ohc=ks56KNRe40IQ7kNvwHqFu0v&_nc_oc=AdppEis6EWONma0O035TQjqm4woSXPZYUi5of9pgZ278SlgVFnU_4Y6toXCdJ7zhN94&_nc_zt=23&_nc_ht=scontent-iad6-1.xx&edm=AOgd6ZUEAAAA&_nc_gid=vTmcBbzQwMZ5OBuZUoi46A&_nc_tpa=Q5bMBQEN6NCp1W7-CFM-YDkUfHSLqv-HsY2csuOC_7_IG-SrxtwmHBOCVq4QUI2Jru1zxupL7UnZBkIrvA&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&ur=afbe02&_nc_sid=58080a&oh=00_Af2oF9nZP1gbH5HvrskI21JlRoqD3ylem1GXirSAIj8srg&oe=69DE69C8", "fb_link": "https://www.facebook.com/permalink.php?story_fbid=1404448511177270&id=367649756950781", "tier": "L2", "ad_type": "KOL UGC", "note": "KOL UGC \u2014 dupe to pool", "note_type": "kol", "lp": "", "tagged": false}, {"ad_id": "120237952651790139", "ad_name": "260325_IMG_RVIEW_GENE_EDUCATIONAL_12_INT_IGPOST_SAB_DRJAMESDINIC_TOP10SUPPLEMENTS_WTAD_16IN1JAMES*", "campaign_name": "L3 | 20260319_TOFU_GLOBAL_CBO_AUTO_7Dclick_IR_DRJAMES_LC_MT* (IM8-USD-01)", "adset_name": "260325 Dr James Dinic (IG Posts) - 16IN1DRJAMES 2/3  > 16IN1DRJAMES Lander_ALT*", "spend": 8745.43, "roas": 1.1, "purchases": 46, "revenue": 9613.69, "cpa": 190.12, "ctr": 4.72, "thumbnail": "https://external-iad6-1.xx.fbcdn.net/emg1/v/t13/4320953804040813521?url=https%3A%2F%2Fwww.facebook.com%2Fads%2Fimage%2F%3Fd%3DAQJjErOZ5aq9Wt2ZG1bD57lW_YA04KbCadW_3LrpKIfoXUotTzvbFR826I5TBLo6yob23H6yZUyXB4gM9ZoLQyuvCll0MnIJvW3K-Z_Hiup_mEN5CFC2Vw7Uo9_SuhoPq78RgRihKjnjbiZDDrij9viE&fb_obo=1&utld=facebook.com&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&edm=AOgd6ZUEAAAA&_nc_gid=vTmcBbzQwMZ5OBuZUoi46A&_nc_oc=Adp9GhlVL38n3QuHSdYSB5HNaaCI4v-YUGzO4XG4ipuIeGJemHb6T7YybBS0ec6AJ7w&ccb=13-1&oh=06_Q3--AUXOlkuZGjDwMX-WJqZXelT77lYtW-K855RRh0adffbC&oe=69DA8CDE&_nc_sid=58080a", "fb_link": "https://www.facebook.com/permalink.php?story_fbid=1472306487596833&id=300483420412645", "tier": "L3", "ad_type": "IG Post", "note": "Generic \u2014 dupe to pool", "note_type": "generic", "lp": "", "tagged": false}, {"ad_id": "120237311296600139", "ad_name": "260309_VID_RVIEW_GEN_EDUCATIONAL_4_NA_SOCIALS_NA_DRJAMESDINIC_RANKINGHEALTHTRENDS_PTAD_16IN1DRJAMES*", "campaign_name": "L3 | 20260305_TOFU_GLOBAL_ASCCBO_AUTO_LC_AMB/Creator IG Post_MT*", "adset_name": "260309 Dr James DiNic(FNL)", "spend": 2092.9, "roas": 1.09, "purchases": 11, "revenue": 2276.79, "cpa": 190.26, "ctr": 5.4, "thumbnail": "https://scontent-iad6-1.xx.fbcdn.net/v/t15.5256-10/649488351_1420769652531077_3017403529921219493_n.jpg?_nc_cat=100&ccb=1-7&_nc_ohc=77O6L1RlacAQ7kNvwHTk6j-&_nc_oc=AdqemOlNntt19SrD-kQs3oquFwmS4jL1-yjwDCqW01xhywQbH0NSIh_TH06RNqDXDQU&_nc_zt=23&_nc_ht=scontent-iad6-1.xx&edm=AOgd6ZUEAAAA&_nc_gid=vTmcBbzQwMZ5OBuZUoi46A&_nc_tpa=Q5bMBQEz3vQj7IqeBrQtmP-E-rk5yXdLjpNsNB3GQhwcoE963vwCYUKPFO2IYIdAs4b-mOGEjB9PqKfUJQ&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&ur=afbe02&_nc_sid=58080a&oh=00_Af3Ol5Rm_VMElgAjs2MfE_kpY3yHG6nJB0u0yFN9YCV4jQ&oe=69DE7319", "fb_link": "https://www.facebook.com/permalink.php?story_fbid=1420769629197746&id=300483420412645", "tier": "L3", "ad_type": "Video", "note": "Generic \u2014 dupe to pool", "note_type": "generic", "lp": "https://get.im8health.com/pages/dr-james", "tagged": false}, {"ad_id": "120237952654590139", "ad_name": "260325_IMG_RVIEW_GENE_EDUCATIONAL_7_INT_IGPOST_SAB_DRJAMESDINIC_TESTOSTERONECHEAT_WTAD_16IN1JAMES*", "campaign_name": "L3 | 20260319_TOFU_GLOBAL_CBO_AUTO_7Dclick_IR_DRJAMES_LC_MT* (IM8-USD-01)", "adset_name": "260325 Dr James Dinic (IG Posts) - 16IN1DRJAMES  > 16IN1DRJAMES Lander_ALT*", "spend": 19685.49, "roas": 1.09, "purchases": 119, "revenue": 21436.58, "cpa": 165.42, "ctr": 3.95, "thumbnail": "https://external-iad6-1.xx.fbcdn.net/emg1/v/t13/2148024698539134202?url=https%3A%2F%2Fwww.facebook.com%2Fads%2Fimage%2F%3Fd%3DAQINpYsvqSZw0oZ7WNM9xACyY085L9aMFVXToPThPLHLFo2pummXip4JLd7AOF5iJqLzNuXiemrBGnxC6-PzYWsOkRS_1DwQ0Oh7RkAI5b7PhxbPOJbtCaR2YWBRnGlUGOSzHvWsMWfLO-LqO_sV_I2m&fb_obo=1&utld=facebook.com&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&edm=AOgd6ZUEAAAA&_nc_gid=vTmcBbzQwMZ5OBuZUoi46A&_nc_oc=AdpK0Pi9-KzblUI8yZJtBiJsUriFw3A7tWXmu3HNv98qymaivBsa89MY0Hy2NtHEjUc&ccb=13-1&oh=06_Q3--Adlf6AeIS6i63SLUt6eAoYG1FoeH54x8sIFT_JlVTEqc&oe=69DAA002&_nc_sid=58080a", "fb_link": "https://www.facebook.com/permalink.php?story_fbid=1472306927596789&id=300483420412645", "tier": "L3", "ad_type": "IG Post", "note": "Generic \u2014 dupe to pool", "note_type": "generic", "lp": "", "tagged": false}, {"ad_id": "120232885863080139", "ad_name": "IMG_C40D_ESSENTIALSANDLONGEVITY_NA_NA_LONGEVITY_PAIRITWITHESSENTIALS_251121_NA_PDP(TBS)", "campaign_name": "L2 | 20251121_TOFU_GLOBAL_ASCCBO_AUTO_LC(SCALE)", "adset_name": "251121 Longevity IMG Winners", "spend": 13668.28, "roas": 1.04, "purchases": 49, "revenue": 14192.98, "cpa": 278.94, "ctr": 0.88, "thumbnail": "https://external-iad6-1.xx.fbcdn.net/emg1/v/t13/16189236890579385067?url=https%3A%2F%2Fwww.facebook.com%2Fads%2Fimage%2F%3Fd%3DAQJm9xXWnkcPwnRh7_9iaq8xSEBIBETUO12IV5f3ZCHJRWn7FEKVHRx1bOdfH42KP-5bLxsxSY1PZOsG0ItRQFKOess2m1MxcPx9nsNZqUrp-uTaruumyJbLncg8MNtLViPbSPCyrnKPHbPU44bGZ9je&fb_obo=1&utld=facebook.com&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&edm=AOgd6ZUEAAAA&_nc_gid=vTmcBbzQwMZ5OBuZUoi46A&_nc_oc=AdpOZxA5NtJxMgkIyw1ToEUYLduCpupciLpgUEo-NjtR3IGu6-ry4ey3DCT8hCaGEPI&ccb=13-1&oh=06_Q3--AbE8sZKkTwN_RbYX0lI6HXEqOaJrZurMZ9t65xZb0yAQ&oe=69DA7DA2&_nc_sid=58080a", "fb_link": "https://www.facebook.com/permalink.php?story_fbid=122177616050396650&id=345914995276546", "tier": "L2", "ad_type": "Static", "note": "Generic \u2014 dupe to pool", "note_type": "generic", "lp": "", "tagged": false}, {"ad_id": "120237741183670139", "ad_name": "VID_1_KOLUGC_DRJAMESDINIC_PAID_LONGEVITY_4BESTSUPPLEMENTSTOSLOWDOWNAGING_260205_WTAD_PDP(LONGEVITY) (DISCOUNTCODE) -10%", "campaign_name": "L3 | 20260319_TOFU_GLOBAL_CBO_AUTO_7Dclick_IR_DRJAMES_LC_MT* (IM8-USD-01)", "adset_name": "260205 Dr James Dinic VID #4  > 16IN1DRJAMES Lander_ALT*", "spend": 5130.08, "roas": 1.04, "purchases": 29, "revenue": 5327.32, "cpa": 176.9, "ctr": 7.1, "thumbnail": "https://scontent-iad3-1.xx.fbcdn.net/v/t15.5256-10/651700384_964405532911736_5521345849866209060_n.jpg?_nc_cat=108&ccb=1-7&_nc_ohc=yvB1DNkghzIQ7kNvwGo20n1&_nc_oc=AdrNApnnDhYEV4Mqzanir5Ch61LjiioGKH5FTe2D1tg5Sc_2bRgOXJYov07_M_lp2DM&_nc_zt=23&_nc_ht=scontent-iad3-1.xx&edm=AOgd6ZUEAAAA&_nc_gid=vTmcBbzQwMZ5OBuZUoi46A&_nc_tpa=Q5bMBQGJqg-O7slWHEYpmTWOmYDwRbGzhOByNf1ALN29JnZYfNm5Psqv6PKJ5BcKeYbd-xuJDukIZVGNPg&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&ur=d2b52d&_nc_sid=58080a&oh=00_Af12lcIzm5n0QnHjmmAy3sVpnpKHDo-OAShm-6LGbGtUEg&oe=69DE6A5F", "fb_link": "https://www.facebook.com/permalink.php?story_fbid=1467155494778599&id=300483420412645", "tier": "L3", "ad_type": "KOL UGC", "note": "KOL UGC \u2014 dupe to pool", "note_type": "kol", "lp": "", "tagged": false}, {"ad_id": "120232885091960139", "ad_name": "IMG_C92A_WELCOMEKIT_NA_NA_WELCOMEKIT_CLAIMYOURKIT_251121_NA_HOMEPAGE", "campaign_name": "L2 | 20251121_TOFU_GLOBAL_ASCCBO_AUTO_LC(SCALE)", "adset_name": "251121 Welcome Kit", "spend": 22884.26, "roas": 1.02, "purchases": 104, "revenue": 23294.46, "cpa": 220.04, "ctr": 0.95, "thumbnail": "https://external-iad6-1.xx.fbcdn.net/emg1/v/t13/14700744637999204375?url=https%3A%2F%2Fwww.facebook.com%2Fads%2Fimage%2F%3Fd%3DAQKSBfkmiXrEq5Hr-rQI5HhHsV7d1-skSMU2EPNSt9i1HgvAhoq0c4jkiR42iGdjHnFSJf6c2ARNgZJWMPwmSD30VvUZ5RAEXnBMWB_z237LtNG8A4kUO3yqBPNGdw4NGAkT0oyeIdNt1Aviz-fEjm6R&fb_obo=1&utld=facebook.com&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&edm=AOgd6ZUEAAAA&_nc_gid=vTmcBbzQwMZ5OBuZUoi46A&_nc_oc=AdrNNQsubcU9gGYHuoUn8bDjgv3clPK8i-qG1GW0FQFqIsL2NCoy6w30GrA5zRL_bv0&ccb=13-1&oh=06_Q3--AUsUAsip4tOK14PkXbKrsA8UQlwGQQ1aLpo7TzOfCJDc&oe=69DA8FA6&_nc_sid=58080a", "fb_link": "https://www.facebook.com/permalink.php?story_fbid=122147549576905450&id=683327568197335", "tier": "L2", "ad_type": "Static", "note": "Generic \u2014 dupe to pool", "note_type": "generic", "lp": "https://im8health.com/", "tagged": false}, {"ad_id": "120237121691590139", "ad_name": "IMG_C11B_JARWHITE_NA_NA_SAVINGS_THE89SUPPLEMENTBILL_260303_NA_GETPDP", "campaign_name": "L3 | 20260303_TOFU_GLOBAL_ASC_AUTO_GETPDP (NEW)(CLPT)_MT*", "adset_name": "260303 Top 50 L30D Winners > GET.PDP", "spend": 11994.12, "roas": 1.02, "purchases": 55, "revenue": 12250.97, "cpa": 218.07, "ctr": 0.55, "thumbnail": "https://external-iad6-1.xx.fbcdn.net/emg1/v/t13/10634378670488841443?url=https%3A%2F%2Fwww.facebook.com%2Fads%2Fimage%2F%3Fd%3DAQLWFtuDIlj6ALS1ioMA1VXPxTw6sx6RDlFyo3XkDbV8jNr5Pwp8i7AypI29M8vgrsWuQE0tiJhnBE_qRUTsc2rX65rTMiZ2mmKB7FZ0Xik_1GoSNvDUVIkrWCKCSYyUUbh6Rp-EWOonrvk-8fe4dkiD&fb_obo=1&utld=facebook.com&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&edm=AOgd6ZUEAAAA&_nc_gid=vTmcBbzQwMZ5OBuZUoi46A&_nc_oc=Adr2mXKagoFDMDk9Pn82yoNH9FfE40GEd49SPGb3zwLv0wNRU3edK0GC-8CTUMtVASs&ccb=13-1&oh=06_Q3--AQo63_6yaGtKwxIpJKy68YuL_T4R8YioobCiKrL-Gj0s&oe=69DAA108&_nc_sid=58080a", "fb_link": "https://www.facebook.com/permalink.php?story_fbid=122192295530396650&id=345914995276546", "tier": "L3", "ad_type": "Static", "note": "Generic \u2014 dupe to pool", "note_type": "generic", "lp": "https://get.im8health.com/essentials", "tagged": false}, {"ad_id": "120235839161080139", "ad_name": "VID_H13B1_KOLUGC_DRARASUPPIAH_NA_LONGEVITY_SERIOUSABOUT_260128_PTAD_VSL(LONGEVITY) -10%", "campaign_name": "L2 | 20251121_TOFU_GLOBAL_ASCCBO_AUTO_LC(SCALE)", "adset_name": "260128 Winners", "spend": 3044.8, "roas": 1.01, "purchases": 14, "revenue": 3080.76, "cpa": 217.49, "ctr": 3.22, "thumbnail": "https://scontent-iad3-1.xx.fbcdn.net/v/t15.5256-10/623019565_1262068942645086_7921952653330732569_n.jpg?_nc_cat=104&ccb=1-7&_nc_ohc=4GBDBCvKZK0Q7kNvwGMKtFv&_nc_oc=Adr_ANYDI7Pb7AYfKzUmGVhl494MJIy3JEaoI36gvxxEuCVj-IZ3_N52Vde4u0st-R4&_nc_zt=23&_nc_ht=scontent-iad3-1.xx&edm=AOgd6ZUEAAAA&_nc_gid=vTmcBbzQwMZ5OBuZUoi46A&_nc_tpa=Q5bMBQH3yiF9xAELe-nBGjNTf3RFIblowRljmEWo8zkG7p4hTityRX4q9P6qtXHQNqpPqoOK9JXMw69G5w&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&ur=afbe02&_nc_sid=58080a&oh=00_Af1S6YP7AVEQoVqzl763zmx1OIRPcTeW3_-JwPD4x9xJCw&oe=69DE6EBB", "fb_link": "https://www.facebook.com/permalink.php?story_fbid=1262068925978421&id=121489488058961", "tier": "L2", "ad_type": "KOL UGC", "note": "KOL UGC \u2014 dupe to pool", "note_type": "kol", "lp": "", "tagged": false}, {"ad_id": "120237469101070139", "ad_name": "VID_2_JAMESPOST_DRJAMESDINIC_PAID_LONGEVITY_LONGEVITYCHEATSHEET_260312_PTAD_16IN1DRJAMES", "campaign_name": "L3 | 20260305_TOFU_GLOBAL_ASCCBO_AUTO_LC_AMB/Creator IG Post_MT*", "adset_name": "260309 Dr James DiNic(FNL)", "spend": 84235.96, "roas": 1.01, "purchases": 422, "revenue": 85433.8, "cpa": 199.61, "ctr": 3.86, "thumbnail": "https://scontent-iad3-2.xx.fbcdn.net/v/t15.5256-10/649507380_811132308671025_1209693797940466211_n.jpg?_nc_cat=105&ccb=1-7&_nc_ohc=5PXL5hsq8yAQ7kNvwGpS8-c&_nc_oc=AdrfrKNTqMqa5JK1d1-52beC64m0WQc-dGpFrWcNe_iJLrKriwRyxGESGLSUrjKeHnE&_nc_zt=23&_nc_ht=scontent-iad3-2.xx&edm=AOgd6ZUEAAAA&_nc_gid=vTmcBbzQwMZ5OBuZUoi46A&_nc_tpa=Q5bMBQGCVVXusT5nTPUn_NCte66q77znamsiJELLaDt5Bh8waumhdmDojochTMufEvaisbJp_U-tBt2eUQ&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&ur=a86139&_nc_sid=58080a&oh=00_Af1Llpr7wYL2QAQUNClC87OIGlzXYFSQ0D761p3HtTuCAg&oe=69DE9267", "fb_link": "https://www.facebook.com/permalink.php?story_fbid=2427991324308127&id=300483420412645", "tier": "L3", "ad_type": "IG Post", "note": "Generic \u2014 dupe to pool", "note_type": "generic", "lp": "https://get.im8health.com/pages/dr-james", "tagged": false}, {"ad_id": "120237244659650139", "ad_name": "260306_IMG_NA_MENO_HORMONAL_C7B_NER_NERMARW1_NA_NA_RAISINGTEENSCARING_NA_MENOPAUSELDP* -WIN26AW2", "campaign_name": "L3 | 20260306_TOFU_GLOBAL_ASCCBO_AUTO_LC_ICP(GLP1)_MT*", "adset_name": "260306 Menopause Warriors (>45F)_ALT*", "spend": 744.63, "roas": 2.37, "purchases": 20, "revenue": 1766.97, "cpa": 37.23, "ctr": 1.89, "thumbnail": "https://external-iad6-1.xx.fbcdn.net/emg1/v/t13/2735582363238749308?url=https%3A%2F%2Fwww.facebook.com%2Fads%2Fimage%2F%3Fd%3DAQJgfVnTHqi8x_JP6HsC7StGlfAmM40nxXdy5_sQYg_1sG6xriGa4N5p8EXm7YifAkf3YSnTaGi5KuVFugDCLeiPwbiyXWMbPDYWgMVRmGZAgtpymGtrR1psB1jfx--Rx1kvlgb1WigRw38dTvJRomii&fb_obo=1&utld=facebook.com&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&edm=AOgd6ZUEAAAA&_nc_gid=vTmcBbzQwMZ5OBuZUoi46A&_nc_oc=AdrmF-89tR6dIWdesmopQDobbs0_VUr6LxssjepDJTGh2y2HNt9x-On20OppzwjQPSY&ccb=13-1&oh=06_Q3--AVMyw9HqLkG7oIcBZiphB_iLkJnVXqUwNGrlvNSo6aeT&oe=69DA9D7F&_nc_sid=58080a", "fb_link": "https://www.facebook.com/permalink.php?story_fbid=122174969216929400&id=635362669669865", "tier": "L3", "ad_type": "Static", "note": "ICP/Persona \u2014 tag only", "note_type": "icp", "lp": "", "tagged": true}, {"ad_id": "120237656395420139", "ad_name": "260317_IMG_NA_MENO_HORMONAL_C38B_NER_NERMARW2_NA_NA_WOMENCANLOSE_NA_MENOPAUSELDP -WIN26AW2", "campaign_name": "L3 | 20260309_TOFU_GLOBAL_ASCCBO_AUTO_LC_ICP#2(MENOPAUSE)_MT*", "adset_name": "260317 Menopause Warriors (>45F)#2_ALT*", "spend": 2142.24, "roas": 1.66, "purchases": 16, "revenue": 3560.9, "cpa": 133.89, "ctr": 2.02, "thumbnail": "https://external-iad6-1.xx.fbcdn.net/emg1/v/t13/4310576467707864887?url=https%3A%2F%2Fwww.facebook.com%2Fads%2Fimage%2F%3Fd%3DAQIhvtCtCZOyCoL4fjosCqmiwX6LyIT0iHd3BBLXaoWfn4VVpVGMNwLim7TyFJL-VPU3tq6eDGubIyz16m_IBvofMQxwD8snLM5KstCXQwh9UqBmo-rQwXAKPdrJBfrj0Gt2diK0oZwP-JFqsJ6MSLDR&fb_obo=1&utld=facebook.com&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&edm=AOgd6ZUEAAAA&_nc_gid=vTmcBbzQwMZ5OBuZUoi46A&_nc_oc=Adr-OzSTLUSJTXQ3YypbsqkMtriP5WNi3C6CffhUI2sBTTqA6MNhHyTufwVI_4XJHeg&ccb=13-1&oh=06_Q3--ASkE4V044GFkQvMZw-jfT0TMFthgGK9Z094OdVOLBZfD&oe=69DA9D7B&_nc_sid=58080a", "fb_link": "https://www.facebook.com/permalink.php?story_fbid=122194704158396650&id=345914995276546", "tier": "L3", "ad_type": "Static", "note": "ICP/Persona \u2014 tag only", "note_type": "icp", "lp": "", "tagged": true}, {"ad_id": "120237321655670139", "ad_name": "260310_VID_VLOG_GEN_PERFORMANCE_3_NA_IGPOST_AMB_TAVICASTRO_LUNGTEST_PTAD_SAV2* - WIN26MW4", "campaign_name": "L3 | 20260305_TOFU_GLOBAL_ASCCBO_AUTO_LC_AMB/Creator IG Post_MT*", "adset_name": "260310 Tavi Castro", "spend": 2922.17, "roas": 1.64, "purchases": 17, "revenue": 4798.83, "cpa": 171.89, "ctr": 8.63, "thumbnail": "https://scontent-iad6-1.xx.fbcdn.net/v/t15.5256-10/649295103_1441863041005393_5870823136913929206_n.jpg?_nc_cat=106&ccb=1-7&_nc_ohc=k9qgY8t8lBoQ7kNvwErfcyI&_nc_oc=AdobK9p3ZkA8fALyfe0AOqXlLaTy0939Ipr-bN3OF1TyAGPQEZb7wXVwxzctOcCRMHQ&_nc_zt=23&_nc_ht=scontent-iad6-1.xx&edm=AOgd6ZUEAAAA&_nc_gid=vTmcBbzQwMZ5OBuZUoi46A&_nc_tpa=Q5bMBQHbCGohE4PsaVbjUHBQVt_w0h9doL-kzpUpMlSjAyDFvFDIEll_i81nyTcZ8pDnKdfIGqIlibLLjg&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&ur=afbe02&_nc_sid=58080a&oh=00_Af3HbzwbPG_9Tu2qgEjdFTiUHEyTT6QDMLOAOUfGMNDktQ&oe=69DE8565", "fb_link": "https://www.facebook.com/permalink.php?story_fbid=1441863014338729&id=255887897846432", "tier": "L3", "ad_type": "IG Post", "note": "Generic \u2014 dupe to pool", "note_type": "generic", "lp": "", "tagged": true}, {"ad_id": "120238568872120139", "ad_name": "260407_VID_TALKH_GENE_CONVENIENCE_1_INT_KOLUGC_KOL_BRIANMAZZA_WHENYOUTRAVEL_WTAD_GETTRAVELLDP* - WIN26AW2", "campaign_name": "L1 | 20260319_TOFU_GLOBAL_CBO_AUTO_IR_VID#2 (Prenetics_MY_1)", "adset_name": "260406 KOLUGC 1/1", "spend": 2891.87, "roas": 1.36, "purchases": 17, "revenue": 3925.54, "cpa": 170.11, "ctr": 10.76, "thumbnail": "https://scontent-iad3-1.xx.fbcdn.net/v/t15.5256-10/665898373_951051484134189_9024736960099979040_n.jpg?_nc_cat=108&ccb=1-7&_nc_ohc=RYRyoFLmBpMQ7kNvwGJoxNe&_nc_oc=AdrQLKtV_FvUquzudaeUkVQKFmlDEta-5Y5FIEutZvRxIHhbPlrYNym788T1vbWZzdE&_nc_zt=23&_nc_ht=scontent-iad3-1.xx&edm=AOgd6ZUEAAAA&_nc_gid=vTmcBbzQwMZ5OBuZUoi46A&_nc_tpa=Q5bMBQHK6UHQICFseB2r1SuxcvL61YxhJghzN_dtQObgb8RUA-dIZL9hDntVZwqebypKjaUV4lbkHCsHNQ&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&ur=afbe02&_nc_sid=58080a&oh=00_Af3QXaBdF0hb7kU_n_kFEk_UzqkajKVcO9QbgwVDbwy6fw&oe=69DE7731", "fb_link": "https://www.facebook.com/permalink.php?story_fbid=951051470800857&id=174007846712600", "tier": "L1", "ad_type": "KOL UGC", "note": "KOL UGC \u2014 dupe to pool", "note_type": "kol", "lp": "", "tagged": true}, {"ad_id": "120238066587320139", "ad_name": "260327_IMG_NA_GENE_WELCOMEKIT_C13_NER_NERMARW4_NA_NA_WELCOMEKITONUS_NA_GETPDP* - WIN26MW4", "campaign_name": "L3 | 20260319_TOFU_US_SUPERSCALER_ASC_AUTO_IR_WINNERS_LC_MT*", "adset_name": "260327 Welcome Kit (US Only)", "spend": 1852.29, "roas": 1.29, "purchases": 12, "revenue": 2384.8, "cpa": 154.36, "ctr": 0.42, "thumbnail": "https://external-iad6-1.xx.fbcdn.net/emg1/v/t13/5808708304163642002?url=https%3A%2F%2Fwww.facebook.com%2Fads%2Fimage%2F%3Fd%3DAQIX3No0he1lYvR8_LzXVILOLlSJAlur2lO30DRyb3UU9GmtwYJBoX51h1ZXYDhUzoePFWAzZvMweVc9rHoFvwUn0313pBrJzFBl7XwIEPFLcL34CAcTaHg4LD3ijC8Bf2-eo1duSuIqWUky8yoDrnxU&fb_obo=1&utld=facebook.com&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&edm=AOgd6ZUEAAAA&_nc_gid=vTmcBbzQwMZ5OBuZUoi46A&_nc_oc=Adryo41I15jtYSRW9B2C5aEYjk0PMXy9npyQhrLB1jddmgkAM_R_eFaSlI_32cB1mMU&ccb=13-1&oh=06_Q3--AYiSMtV1U86xMm4TxTdHbCx0MIP9go03YesSkGiYvvZC&oe=69DAA184&_nc_sid=58080a", "fb_link": "https://www.facebook.com/permalink.php?story_fbid=122196399722396650&id=345914995276546", "tier": "L3", "ad_type": "Static", "note": "Generic \u2014 dupe to pool", "note_type": "generic", "lp": "", "tagged": true}, {"ad_id": "120237753445670139", "ad_name": "VID_ACH-MAKS-86(1)SS4_CREATORUGC_ACH_PAID_GUTHEALTH_THISISWHATHAPPENSWHEN_260319_NA_GETGUTLDP - WIN26AW2", "campaign_name": "L1 | 20260319_TOFU_GLOBAL_CBO_AUTO_IR_ACH (Prenetics_MY_1)", "adset_name": "260319 PROJECT86 - Gut Health - GETGUT _ALT*", "spend": 2544.32, "roas": 1.27, "purchases": 15, "revenue": 3235.87, "cpa": 169.62, "ctr": 1.05, "thumbnail": "https://scontent-iad6-1.xx.fbcdn.net/v/t15.5256-10/652863921_2016389503095609_1433586986118624125_n.jpg?_nc_cat=107&ccb=1-7&_nc_ohc=tq1MMM12rp8Q7kNvwHbD0f0&_nc_oc=Ado3XRrDdvkUfmtixs6D0f31VCEBURzBwLYMQ7LYj_TbmMpoZMXxhFDy0nj1a_-p6lc&_nc_zt=23&_nc_ht=scontent-iad6-1.xx&edm=AOgd6ZUEAAAA&_nc_gid=vTmcBbzQwMZ5OBuZUoi46A&_nc_tpa=Q5bMBQF9pc61F5KuC3ji324Zr4j5MezCOEo_f0AUgXE9Xozp4olkSjhljH7TOvc5NyDVzw2SItZvK01z8w&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&ur=d2b52d&_nc_sid=58080a&oh=00_Af3O5vybK2-BB_7LTiRVglz2r5atEcL4PODJtEet-FJwvg&oe=69DE8D4C", "fb_link": "https://www.facebook.com/permalink.php?story_fbid=122195391098396650&id=345914995276546", "tier": "L1", "ad_type": "Creator UGC", "note": "ICP/Persona \u2014 tag only", "note_type": "icp", "lp": "", "tagged": true}, {"ad_id": "120237238835260139", "ad_name": "260306_IMG_RVIEW_HCSS_ENERGY_C48B_NER_NERJANW3_NA_NA_THEENDOF_NA_FEELAGAINLDP - WIN26AW2", "campaign_name": "L3 | 20260306_TOFU_GLOBAL_ASCCBO_AUTO_LC_ICP(GLP1)_MT*", "adset_name": "260306 Health Condition Solution Seeker (Why IM8 lander)_ALT*", "spend": 3684.13, "roas": 1.21, "purchases": 17, "revenue": 4474.15, "cpa": 216.71, "ctr": 0.91, "thumbnail": "https://external-iad6-1.xx.fbcdn.net/emg1/v/t13/5759740099260747056?url=https%3A%2F%2Fwww.facebook.com%2Fads%2Fimage%2F%3Fd%3DAQKzjQpDeHRl-DnXV3fAJUkj4X8k9w1KJI7FzAJ1KJa7MBxuvE5b3hiF1Vb68qwx5fWY0KmH7dWTpN2LAXtdC5MdMvaSXkcPq_Ons3LUEvJZ_DOJ7s9rneqvkAusXZITo0AL4QU-tJQynzB5g3460UJe&fb_obo=1&utld=facebook.com&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&edm=AOgd6ZUEAAAA&_nc_gid=vTmcBbzQwMZ5OBuZUoi46A&_nc_oc=Adrah9kALHp8FOr7wj9i2ZT_s66sidzEe10yeEOLXU9wEDp6Du1p1Zj3KmjHaPSX1nU&ccb=13-1&oh=06_Q3--AbSx3VH9fuFlwShNIKov67GCJLJSBVoT5NfZ4h2xcgOD&oe=69DA9F57&_nc_sid=58080a", "fb_link": "https://www.facebook.com/permalink.php?story_fbid=122198087780396650&id=345914995276546", "tier": "L3", "ad_type": "Static", "note": "Generic \u2014 dupe to pool", "note_type": "generic", "lp": "", "tagged": true}, {"ad_id": "120238294571240139", "ad_name": "260331_VID_TALKH_BIOHK_CELLULARHEALTH_1_INT_KOLUGC_KOL_DUSTINPEDERSON_MOSTGUYSARESPENDING_PTAD_SCIENCELDP* -WIN26AW1", "campaign_name": "L1 | 20260320_TOFU_GLOBAL_CBO_AUTO_IR_VID#6 (Prenetics_MY_1)", "adset_name": "260331 KOLUGC 3/5", "spend": 13987.83, "roas": 1.2, "purchases": 90, "revenue": 16816.63, "cpa": 155.42, "ctr": 4.33, "thumbnail": "https://scontent-iad3-1.xx.fbcdn.net/v/t15.5256-10/660481610_1256132666106263_786040631532818969_n.jpg?_nc_cat=104&ccb=1-7&_nc_ohc=sbZbxNwZAJEQ7kNvwFPiRac&_nc_oc=AdqRkNT44x4xoF95xMQORZ2mu-_V1V8ODurO8u7ew65gsSG7TIH9eHul4MTnLR3bkoA&_nc_zt=23&_nc_ht=scontent-iad3-1.xx&edm=AOgd6ZUEAAAA&_nc_gid=vTmcBbzQwMZ5OBuZUoi46A&_nc_tpa=Q5bMBQHRTK8aXIIpZ4IBZMhbOmV4wqQ8jo1NKvzxdNcWQLU4Z_BV8pGgwV-Dnv16d4JbjiasVElUlNEotQ&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&ur=a7ce7f&_nc_sid=58080a&oh=00_Af03uQnbn11UZ2CFBYjDHQJfzMMI3Asvt7Hb2r-F-hHsFg&oe=69DE709E", "fb_link": "https://www.facebook.com/permalink.php?story_fbid=1256132642772932&id=374593339609836", "tier": "L1", "ad_type": "KOL UGC", "note": "KOL UGC \u2014 dupe to pool", "note_type": "kol", "lp": "", "tagged": true}, {"ad_id": "120237677328740139", "ad_name": "260317_IMG_NA_GENE_EDUCATIONAL_C28A_NER_NERMARW2_NA_NA_SKEPTICSDIDNTEXPECT_PTAD_AMYSHAHVITAMINADVERTORIAL* - WIN26MW4", "campaign_name": "L3 | 20260317_TOFU_GLOBAL_ASCCBO_AUTO_LC_ICP(SUPP SKEPTICS)_MT*", "adset_name": "260313 ANGLE 5: Supplement Skeptics(DRAMYSHAH#1-Most Vitamins Are Useless) _ALT*", "spend": 2945.33, "roas": 1.19, "purchases": 17, "revenue": 3509.0, "cpa": 173.25, "ctr": 0.93, "thumbnail": "https://external-iad6-1.xx.fbcdn.net/emg1/v/t13/16963964830979127132?url=https%3A%2F%2Fwww.facebook.com%2Fads%2Fimage%2F%3Fd%3DAQK3UXsekbr3mLHOswUXUHrxh404ws_7D1i_0Oli-C52_mz4A56USTeYgieL95LYgXWOvtuzezlmMksK1tViY1k_wwugXopl35AUaq6NYwAnzF36S8ae3x2hzjkrsqXKlTFKt7FXYsTPBfVwJEKz-j9w&fb_obo=1&utld=facebook.com&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&edm=AOgd6ZUEAAAA&_nc_gid=vTmcBbzQwMZ5OBuZUoi46A&_nc_oc=Adq4cWHjf1NSr5y16W2Do5Zn2LH7NUvNYiuE63J7XPG2-74KZfBaIryqJ6h29UHohWU&ccb=13-1&oh=06_Q3--AVyjBm1LATBYpPQQ6--9zlHZODCHy7UJzubrykBqH2bU&oe=69DA9904&_nc_sid=58080a", "fb_link": "https://www.facebook.com/permalink.php?story_fbid=1295355489077045&id=309816792556064", "tier": "L3", "ad_type": "Static", "note": "ICP/Persona \u2014 tag only", "note_type": "icp", "lp": "", "tagged": true}, {"ad_id": "120237677320560139", "ad_name": "260317_IMG_NA_GENE_EDUCATIONAL_C27A_NER_NERMARW2_NA_NA_REPLACEALLYOUR_PTAD_AMYSHAHVITAMINADVERTORIAL -WIN26MW4", "campaign_name": "L3 | 20260317_TOFU_GLOBAL_ASCCBO_AUTO_LC_ICP(SUPP SKEPTICS)_MT*", "adset_name": "260313 ANGLE 5: Supplement Skeptics(DRAMYSHAH#1-Most Vitamins Are Useless) _ALT*", "spend": 9332.56, "roas": 1.05, "purchases": 54, "revenue": 9836.89, "cpa": 172.83, "ctr": 4.36, "thumbnail": "https://external-iad6-1.xx.fbcdn.net/emg1/v/t13/12505925321740767413?url=https%3A%2F%2Fwww.facebook.com%2Fads%2Fimage%2F%3Fd%3DAQIzVqFTEEXCk1ziGaDBczunmIqZFHwjr9JNORkPvHW0gxUe1tlR_8LGeO8l_1li86yhD_M82HvYWb7YcwSZAUpKaB9wgWhSqAfYrrlOXKyaIbas-IDi3ujNQXwf6BsALa1q6xDv59EKQPhpLpJ9qixO&fb_obo=1&utld=facebook.com&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&edm=AOgd6ZUEAAAA&_nc_gid=vTmcBbzQwMZ5OBuZUoi46A&_nc_oc=AdpbWSL4WE9wFqLmuzVoByBlBPnx84isJcvUazVnTVJSyd0_-Ig2tgt5Pg1nayT0wa4&ccb=13-1&oh=06_Q3--AUFpozPBlrqNd6ytHZtBuQxtif5DZIoeF4oeem59XEvf&oe=69DAA5AA&_nc_sid=58080a", "fb_link": "https://www.facebook.com/permalink.php?story_fbid=1295355445743716&id=309816792556064", "tier": "L3", "ad_type": "Static", "note": "ICP/Persona \u2014 tag only", "note_type": "icp", "lp": "", "tagged": true}]}];
 
-// Next run label
-const dow=new Date().getDay();
-const next=new Date();
-next.setDate(next.getDate()+(dow===1?4:dow===5?3:((8-dow)%7||7)));
-document.getElementById('nextRun').textContent=next.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});
+document.getElementById('lastUpdated').textContent = 'Updated: 10 Apr 2026, 08:02 UTC';
 
-// WA
-document.getElementById('waText').textContent=D.wa_text;
-function copyWA(btn){navigator.clipboard.writeText(D.wa_text).then(()=>{btn.textContent='Copied ✓';btn.classList.add('copied');setTimeout(()=>{btn.textContent='Copy';btn.classList.remove('copied');},2000);});}
+function roasCls(r) { return r>=2?'great':r>=1.5?'good':'ok'; }
 
-// Stats
-const s=D.stats;
-document.getElementById('sg').innerHTML=[
-  {l:'New (Pool)',v:s.new_pool,c:'teal'},{l:'New (ICP)',v:s.new_icp,c:'purple'},
-  {l:'Still Winning',v:s.returning,c:'blue'},{l:'Total',v:s.total,c:'gold'},
-  {l:'Revenue',v:f.u(s.total_rev),c:'green'},
-  {l:'Avg ROAS',v:f.r(s.avg_roas),c:s.avg_roas>=1.5?'green':'gold'},
-].map((x,i)=>`<div class="stat" style="animation-delay:${i*.05}s"><div class="stat-label">${x.l}</div><div class="stat-value ${x.c}">${x.v}</div></div>`).join('');
+function thumbHTML(ad) {
+  if (ad.thumbnail) {
+    return `<img src="${ad.thumbnail}" alt="" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\"no-thumb\">No preview</div>'">`;
+  }
+  return `<div class="no-thumb">No preview</div>`;
+}
 
-function rc(r){return r>=2?'great':r>=1.5?'good':'ok';}
-function card(ad,isRet){
-  const nt=ad.note_type||'generic';
-  const badge=isRet?'Still Winning':nt==='kol'?'Dupe → Pool':nt==='icp'?'Tag only':'Dupe → Pool';
-  const bc=isRet?'ret':nt;
-  return `<div class="card" onclick="tog(this)">
-    <div class="card-main">
-      <div class="card-left"><div class="tb tier-${ad.tier}">${ad.tier}</div><div class="tc">${ad.ad_type}</div><div class="ab ${bc}">${badge}</div></div>
-      <div class="cb">
-        <div class="an">${ad.ad_name}</div>
-        <div class="mr"><span class="mi">📁 ${ad.adset_name}</span></div>
-        <div class="mr"><span class="im sp">${f.u(ad.spend)}</span><span class="im ro ${rc(ad.roas)}">ROAS ${f.r(ad.roas)}</span><span class="im pu">${ad.purchases} purchases</span></div>
+function typeClass(nt) {
+  if (nt==='kol') return 'kol';
+  if (nt==='icp') return 'icp';
+  if (nt==='generic') return 'generic';
+  return 'static';
+}
+
+function typeLabel(nt, adType) {
+  if (nt==='kol') return adType||'KOL UGC';
+  if (nt==='icp') return 'ICP';
+  return adType||'Static';
+}
+
+function buildCard(ad) {
+  const tc = typeClass(ad.note_type);
+  const tl = typeLabel(ad.note_type, ad.ad_type);
+  const fbBtn = ad.fb_link
+    ? `<a class="fb-link" href="${ad.fb_link}" target="_blank">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+        View Post
+      </a>`
+    : '';
+  const taggedBadge = ad.tagged ? `<div class="thumb-tagged">✓ Tagged</div>` : '';
+  const lp = ad.lp ? `<a class="lp-link" href="${ad.lp}" target="_blank" title="${ad.lp}">${ad.lp.replace('https://','').replace('get.im8health.com','').replace('im8health.com','')||ad.lp}</a>` : '<span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted)">—</span>';
+
+  return `<div class="card${ad.tagged?' tagged-card':''}">
+    <div class="card-thumb">
+      ${thumbHTML(ad)}
+      <div class="thumb-badges">
+        <span class="thumb-type ${tc}">${tl}</span>
       </div>
-      <div class="ch"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 5l5 5 5-5"/></svg></div>
+      ${taggedBadge}
+      ${fbBtn}
     </div>
-    <div class="ce">
-      <div class="eg"><div class="el">Campaign</div><div class="ev">${ad.campaign_name}</div></div>
-      <div class="eg"><div class="el">Revenue</div><div class="ev" style="color:var(--green);font-family:'DM Mono',monospace;">${f.u(ad.revenue)}</div></div>
-      <div class="eg"><div class="el">CPA</div><div class="ev" style="font-family:'DM Mono',monospace;">${f.u(ad.cpa)}</div></div>
-      <div class="eg"><div class="el">Landing Page</div><div class="ev"><a href="${ad.url}" target="_blank">${ad.url||'—'}</a></div></div>
-      <button class="db" onclick="done(this,event)">☐ Mark done</button>
+    <div class="card-body">
+      <div class="card-adname" title="${ad.ad_name}">${ad.ad_name}</div>
+      <div class="card-metrics">
+        <div class="metric">
+          <div class="metric-label">ROAS</div>
+          <div class="metric-value ${roasCls(ad.roas)}">${ad.roas.toFixed(2)}x</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Purchases</div>
+          <div class="metric-value">${ad.purchases}</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Spend</div>
+          <div class="metric-value" style="font-size:14px;color:var(--amber)">${ad.spend>0?'$'+ad.spend.toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:0}):' —'}</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Revenue</div>
+          <div class="metric-value" style="font-size:14px;color:var(--green)">${ad.revenue>0?'$'+ad.revenue.toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:0}):' —'}</div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <div class="badges">
+          <span class="badge tier-${ad.tier}">${ad.tier}</span>
+          <span class="badge ${ad.note_type}">${ad.note}</span>
+        </div>
+        ${lp}
+      </div>
     </div>
   </div>`;
 }
-function render(id,cnt,ads,isRet){
-  document.getElementById(cnt).textContent=ads.length+' ads';
-  document.getElementById(id).innerHTML=ads.length?ads.map(a=>card(a,isRet)).join(''):'<div class="empty">None this window ✓</div>';
+
+function renderRun(run) {
+  const untagged = run.ads.filter(a => !a.tagged);
+  const tagged   = run.ads.filter(a => a.tagged);
+  const avgRoas  = run.ads.length ? (run.ads.reduce((s,a)=>s+a.roas,0)/run.ads.length).toFixed(2) : '—';
+  const totalRev = run.ads.reduce((s,a)=>s+a.revenue,0);
+  const totalP   = run.ads.reduce((s,a)=>s+a.purchases,0);
+
+  let html = `
+    <div class="run-header">
+      <div class="run-title">Winners &nbsp;<span>${run.tag}</span></div>
+      <div class="run-meta">
+        <span>📅 <b>${run.date_range}</b></span>
+        <span>🗓 <b>${run.run_day} cut</b></span>
+        <span>🔴 <b>${untagged.length}</b> needs action</span>
+        <span>✅ <b>${tagged.length}</b> tagged</span>
+      </div>
+    </div>
+    <div class="stats-row">
+      <div class="stat"><div class="stat-label">Needs Action</div><div class="stat-value" style="color:var(--amber)">${untagged.length}</div></div>
+      <div class="stat"><div class="stat-label">Already Tagged</div><div class="stat-value" style="color:var(--green)">${tagged.length}</div></div>
+      <div class="stat"><div class="stat-label">Avg ROAS</div><div class="stat-value" style="color:var(--gold)">${avgRoas}x</div></div>
+      <div class="stat"><div class="stat-label">Total Purchases</div><div class="stat-value">${totalP}</div></div>
+      <div class="stat"><div class="stat-label">Revenue</div><div class="stat-value" style="color:var(--green);font-size:18px">${totalRev>0?'$'+totalRev.toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:0}):' —'}</div></div>
+    </div>`;
+
+  // Untagged section
+  html += `<div class="section">
+    <div class="section-head">
+      <h2>🔴 Needs Action</h2>
+      <span class="section-badge action">${untagged.length} ads</span>
+      <div class="section-line"></div>
+    </div>
+    ${untagged.length
+      ? `<div class="cards-grid">${untagged.map(buildCard).join('')}</div>`
+      : '<div class="no-data">No untagged winners this window ✓</div>'
+    }
+  </div>`;
+
+  // Tagged section (collapsed)
+  html += `<div class="section">
+    <div class="section-head">
+      <h2>✅ Already Tagged</h2>
+      <span class="section-badge done">${tagged.length} ads</span>
+      <div class="section-line"></div>
+      <button class="toggle-tagged" onclick="toggleTagged(this)">Show</button>
+    </div>
+    <div class="tagged-body" style="display:none">
+      ${tagged.length
+        ? `<div class="cards-grid">${tagged.map(buildCard).join('')}</div>`
+        : '<div class="no-data">None</div>'
+      }
+    </div>
+  </div>`;
+
+  return html;
 }
-render('s1','c1',D.pool_new,false);
-render('s2','c2',D.icp_new,false);
-render('s3','c3',D.returning,true);
-document.querySelectorAll('.card').forEach((c,i)=>c.style.animationDelay=(i*.04)+'s');
-function tog(c){c.classList.toggle('open');}
-function done(btn,e){e.stopPropagation();const c=btn.closest('.card');const d=btn.classList.toggle('done');btn.textContent=d?'✅ Done':'☐ Mark done';c.classList.toggle('done-card',d);}
+
+function toggleTagged(btn) {
+  const body = btn.closest('.section').querySelector('.tagged-body');
+  const showing = body.style.display !== 'none';
+  body.style.display = showing ? 'none' : 'block';
+  btn.textContent = showing ? 'Show' : 'Hide';
+}
+
+// Build tabs
+const tabsEl = document.getElementById('tabs');
+const mainEl = document.getElementById('main');
+
+if (RUNS.length === 0) {
+  tabsEl.innerHTML = '<div style="display:flex;align-items:center;padding:0 16px;font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);">No runs yet</div>';
+} else {
+  RUNS.forEach((run, i) => {
+    const untagged = run.ads.filter(a => !a.tagged).length;
+    const tab = document.createElement('div');
+    tab.className = 'tab' + (i===0?' active':'');
+    tab.innerHTML = `
+      <div class="tab-day">${run.run_day}</div>
+      <div class="tab-date">${run.tab_date}</div>
+      <div class="tab-count ${untagged>0?'has-untagged':''}">${untagged>0?'🔴 '+untagged+' action':'✅ all tagged'}</div>`;
+    tab.onclick = () => {
+      document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+      tab.classList.add('active');
+      mainEl.innerHTML = renderRun(run);
+    };
+    tabsEl.appendChild(tab);
+  });
+
+  // Render most recent run
+  mainEl.innerHTML = renderRun(RUNS[0]);
+}
 </script>
 </body>
 </html>
