@@ -2,7 +2,6 @@
 """
 IM8 Winners Dashboard — Meta API
 Pulls last 30 days, stores all qualifying ads, generates filterable dashboard.
-Compact row cards, expand to see thumbnail. Date filter with Apply button.
 """
 
 import os, json, re, sys
@@ -47,7 +46,6 @@ LP_MAP = {
     'PROUPGRADELDP':'https://get.im8health.com/pages/pro-upgrade',
     'V2UPGRADELDP':'https://im8health.com/pages/essentials-pro-release',
     'PROMPTLDP':'https://get.im8health.com/prompt',
-    'NYLDP':'https://im8health.com/',
 }
 
 def api_get(path, params):
@@ -190,10 +188,10 @@ def fetch_creatives(ad_ids):
     return creatives
 
 def generate_html(ads, date_start, date_end):
-    now_str  = datetime.now().strftime('%-d %b %Y, %H:%M UTC')
-    ads_json = json.dumps(ads)
-    ds_iso   = date_start
-    de_iso   = date_end
+    now_str   = __import__('datetime').datetime.now().strftime('%-d %b %Y, %H:%M UTC')
+    ads_json  = __import__('json').dumps(ads)
+    ds_iso    = date_start
+    de_iso    = date_end
 
     return f'''<!DOCTYPE html>
 <html lang="en">
@@ -202,127 +200,107 @@ def generate_html(ads, date_start, date_end):
 <title>IM8 Winners</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-:root{{--bg:#0a0a0f;--surface:#111118;--surface2:#18181f;--border:rgba(255,255,255,.07);--gold:#e8b450;--gold-dim:rgba(232,180,80,.12);--teal:#3ecfb2;--teal-dim:rgba(62,207,178,.1);--purple:#9b7cff;--purple-dim:rgba(155,124,255,.1);--blue:#60a5fa;--green:#4ade80;--amber:#fb923c;--red:#f87171;--white:#f0f0f8;--muted:#5a5a7a;--l1:#fb923c;--l3:#60a5fa;}}
+:root{{--bg:#0a0a0f;--surface:#111118;--surface2:#18181f;--border:rgba(255,255,255,.07);--gold:#e8b450;--gold-dim:rgba(232,180,80,.12);--teal:#3ecfb2;--teal-dim:rgba(62,207,178,.1);--purple:#9b7cff;--purple-dim:rgba(155,124,255,.1);--blue:#60a5fa;--green:#4ade80;--amber:#fb923c;--white:#f0f0f8;--muted:#5a5a7a;--l1:#fb923c;--l3:#60a5fa;}}
 *{{margin:0;padding:0;box-sizing:border-box;}}
 body{{background:var(--bg);color:var(--white);font-family:"DM Sans",sans-serif;font-weight:300;min-height:100vh;}}
 body::before{{content:"";position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:.4;}}
 .app{{position:relative;z-index:1;}}
 
-/* Header */
-.header{{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 28px;position:sticky;top:0;z-index:100;}}
-.header-top{{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}}
+.header{{background:var(--surface);border-bottom:1px solid var(--border);padding:16px 28px;position:sticky;top:0;z-index:100;}}
+.header-top{{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}}
 .brand{{display:flex;align-items:center;gap:10px;}}
-.brand-dot{{width:7px;height:7px;background:var(--gold);border-radius:50%;animation:pulse 2s infinite;flex-shrink:0;}}
+.brand-dot{{width:8px;height:8px;background:var(--gold);border-radius:50%;animation:pulse 2s infinite;flex-shrink:0;}}
 @keyframes pulse{{0%,100%{{opacity:1}}50%{{opacity:.3}}}}
 .brand-name{{font-family:"Syne",sans-serif;font-size:15px;font-weight:800;color:var(--gold);}}
-.header-meta{{font-family:"DM Mono",monospace;font-size:10px;color:var(--muted);display:flex;align-items:center;gap:10px;}}
-.live-dot{{width:5px;height:5px;background:var(--green);border-radius:50%;animation:pulse 2s infinite;display:inline-block;margin-right:3px;}}
+.header-meta{{font-family:"DM Mono",monospace;font-size:11px;color:var(--muted);display:flex;align-items:center;gap:12px;}}
+.live-dot{{width:6px;height:6px;background:var(--green);border-radius:50%;animation:pulse 2s infinite;display:inline-block;margin-right:4px;}}
 
-/* Filters */
 .filters{{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}}
-.filter-group{{display:flex;align-items:center;gap:5px;}}
+.filter-group{{display:flex;align-items:center;gap:6px;}}
 .filter-label{{font-family:"DM Mono",monospace;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;white-space:nowrap;}}
-.date-input{{background:var(--surface2);border:1px solid var(--border);color:var(--white);font-family:"DM Mono",monospace;font-size:11px;padding:5px 8px;border-radius:7px;outline:none;cursor:pointer;width:110px;}}
+.date-input{{background:var(--surface2);border:1px solid var(--border);color:var(--white);font-family:"DM Mono",monospace;font-size:11px;padding:5px 9px;border-radius:7px;outline:none;cursor:pointer;width:120px;}}
 .date-input:focus{{border-color:var(--gold);}}
 .sep{{font-family:"DM Mono",monospace;font-size:11px;color:var(--muted);}}
-.fetch-btn{{background:var(--gold-dim);border:1px solid var(--gold);color:var(--gold);font-family:"DM Mono",monospace;font-size:11px;padding:5px 14px;border-radius:7px;cursor:pointer;transition:all .15s;font-weight:500;white-space:nowrap;}}
-.fetch-btn:hover{{background:rgba(232,180,80,.25);}}
-.fetch-btn:active{{transform:scale(.97);}}
-.pill-group{{display:flex;gap:3px;}}
-.pill{{background:var(--surface2);border:1px solid var(--border);color:var(--muted);font-family:"DM Mono",monospace;font-size:10px;padding:4px 10px;border-radius:20px;cursor:pointer;transition:all .15s;white-space:nowrap;}}
+.fetch-btn{{background:var(--gold-dim);border:1px solid var(--gold);color:var(--gold);font-family:"DM Mono",monospace;font-size:11px;padding:5px 14px;border-radius:7px;cursor:pointer;transition:all .15s;font-weight:500;}}
+.fetch-btn:hover{{background:rgba(232,180,80,.2);}}
+.divider{{width:1px;height:20px;background:var(--border);}}
+.pill-group{{display:flex;gap:4px;}}
+.pill{{background:var(--surface2);border:1px solid var(--border);color:var(--muted);font-family:"DM Mono",monospace;font-size:11px;padding:4px 11px;border-radius:20px;cursor:pointer;transition:all .15s;white-space:nowrap;}}
 .pill:hover{{border-color:var(--gold);color:var(--gold);}}
 .pill.active{{background:var(--gold-dim);border-color:var(--gold);color:var(--gold);}}
-.pill.action-pill.active{{background:rgba(251,146,60,.15);border-color:var(--amber);color:var(--amber);}}
-.pill.tagged-pill.active{{background:rgba(74,222,128,.1);border-color:var(--green);color:var(--green);}}
-.vdivider{{width:1px;height:20px;background:var(--border);}}
-.results-count{{font-family:"DM Mono",monospace;font-size:10px;color:var(--muted);margin-left:auto;white-space:nowrap;}}
+.pill.ap.active{{background:rgba(251,146,60,.15);border-color:var(--amber);color:var(--amber);}}
+.pill.tp.active{{background:rgba(74,222,128,.1);border-color:var(--green);color:var(--green);}}
+.results-count{{font-family:"DM Mono",monospace;font-size:11px;color:var(--muted);margin-left:auto;white-space:nowrap;}}
 .results-count b{{color:var(--white);}}
 
-/* Main */
 .main{{padding:20px 28px;max-width:1600px;margin:0 auto;}}
-
-/* Stats */
-.stats-row{{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:20px;}}
-.stat{{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:14px 16px;position:relative;overflow:hidden;}}
+.stats-row{{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:20px;}}
+.stat{{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px;position:relative;overflow:hidden;}}
 .stat::after{{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.4;}}
-.stat-label{{font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:4px;font-family:"DM Mono",monospace;}}
+.stat-label{{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:4px;font-family:"DM Mono",monospace;}}
 .stat-value{{font-family:"Syne",sans-serif;font-size:20px;font-weight:700;}}
 
-/* Table header */
-.table-header{{display:grid;grid-template-columns:28px 80px 80px 1fr 90px 70px 80px 80px 100px 36px;gap:0;align-items:center;padding:6px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:9px 9px 0 0;font-family:"DM Mono",monospace;font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:1px;}}
-.th{{padding:0 6px;}}
+/* Row list */
+.rows-list{{display:flex;flex-direction:column;gap:4px;}}
 
-/* Row cards */
-.rows{{display:flex;flex-direction:column;gap:1px;}}
-.row-card{{background:var(--surface);border:1px solid var(--border);border-left:3px solid transparent;overflow:hidden;transition:border-color .15s;animation:fadeIn .2s ease both;}}
-.row-card:first-child{{border-radius:0;}}
-.row-card:last-child{{border-radius:0 0 9px 9px;}}
-.row-card.untagged{{border-left-color:var(--amber);}}
-.row-card.tagged{{border-left-color:var(--green);opacity:.65;}}
-.row-card.tagged:hover{{opacity:1;}}
-.row-card:hover{{border-color:rgba(232,180,80,.3);z-index:1;position:relative;}}
-.row-card.open{{border-color:var(--gold);}}
+.row-card{{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;transition:border-color .15s;cursor:pointer;animation:fadeUp .2s ease both;}}
+.row-card:hover{{border-color:rgba(232,180,80,.25);}}
+.row-card.open{{border-color:rgba(232,180,80,.4);}}
+.row-card.untagged-row{{border-left:3px solid var(--amber);}}
+.row-card.tagged-row{{border-left:3px solid var(--green);}}
 
-/* Row main */
-.row-main{{display:grid;grid-template-columns:28px 80px 80px 1fr 90px 70px 80px 80px 100px 36px;gap:0;align-items:center;padding:8px 12px;cursor:pointer;min-height:44px;}}
-.row-status{{display:flex;align-items:center;justify-content:center;}}
-.status-dot{{width:7px;height:7px;border-radius:50%;flex-shrink:0;}}
-.status-dot.action{{background:var(--amber);box-shadow:0 0 6px rgba(251,146,60,.5);}}
-.status-dot.done{{background:var(--green);}}
-.row-tier{{padding:0 6px;}}
-.tier-badge{{display:inline-flex;align-items:center;justify-content:center;font-family:"DM Mono",monospace;font-size:9px;font-weight:600;padding:2px 7px;border-radius:4px;}}
-.tier-L1{{background:rgba(251,146,60,.15);color:var(--l1);border:1px solid rgba(251,146,60,.3);}}
-.tier-L2{{background:rgba(74,222,128,.08);color:#6ee7b7;border:1px solid rgba(74,222,128,.2);}}
-.tier-L3{{background:rgba(96,165,250,.1);color:var(--l3);border:1px solid rgba(96,165,250,.2);}}
-.row-type{{padding:0 6px;}}
-.type-badge{{font-family:"DM Mono",monospace;font-size:9px;padding:2px 7px;border-radius:4px;display:inline-block;}}
-.type-badge.kol{{background:var(--teal-dim);color:var(--teal);}}
-.type-badge.icp{{background:var(--purple-dim);color:var(--purple);}}
-.type-badge.generic{{background:var(--gold-dim);color:var(--gold);}}
-.row-name{{padding:0 6px;min-width:0;}}
-.ad-name-text{{font-family:"DM Mono",monospace;font-size:10px;color:var(--white);opacity:.8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}}
-.ad-adset{{font-family:"DM Mono",monospace;font-size:9px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px;}}
-.row-metric{{padding:0 6px;text-align:right;}}
-.metric-val{{font-family:"Syne",sans-serif;font-size:13px;font-weight:700;}}
-.metric-val.great{{color:var(--green);}} .metric-val.good{{color:#a3e635;}} .metric-val.ok{{color:var(--amber);}} .metric-val.muted{{color:var(--muted);font-size:11px;font-weight:400;}}
-.row-note{{padding:0 6px;}}
-.note-badge{{font-family:"DM Mono",monospace;font-size:9px;padding:2px 7px;border-radius:4px;display:inline-block;white-space:nowrap;}}
-.note-badge.kol{{background:var(--teal-dim);color:var(--teal);border:1px solid rgba(62,207,178,.15);}}
-.note-badge.icp{{background:var(--purple-dim);color:var(--purple);border:1px solid rgba(155,124,255,.15);}}
-.note-badge.generic{{background:var(--gold-dim);color:var(--gold);}}
-.row-chevron{{display:flex;align-items:center;justify-content:center;color:var(--muted);transition:transform .2s;}}
+.row-main{{display:flex;align-items:center;gap:12px;padding:10px 14px;min-height:48px;}}
+.row-status{{flex-shrink:0;}}
+.status-dot{{width:8px;height:8px;border-radius:50%;flex-shrink:0;}}
+.status-dot.action{{background:var(--amber);}}
+.status-dot.tagged{{background:var(--green);}}
+.row-badges{{display:flex;gap:5px;flex-shrink:0;}}
+.rb{{font-family:"DM Mono",monospace;font-size:10px;font-weight:500;padding:2px 7px;border-radius:4px;}}
+.rb.tier-L1{{background:rgba(251,146,60,.15);color:var(--l1);border:1px solid rgba(251,146,60,.3);}}
+.rb.tier-L3{{background:rgba(96,165,250,.1);color:var(--l3);border:1px solid rgba(96,165,250,.2);}}
+.rb.tier-L2{{background:rgba(74,222,128,.1);color:var(--green);border:1px solid rgba(74,222,128,.2);}}
+.rb.kol{{background:var(--teal-dim);color:var(--teal);border:1px solid rgba(62,207,178,.2);}}
+.rb.icp{{background:var(--purple-dim);color:var(--purple);border:1px solid rgba(155,124,255,.2);}}
+.rb.generic{{background:var(--gold-dim);color:var(--gold);}}
+.row-name{{font-family:"DM Mono",monospace;font-size:11px;color:var(--white);opacity:.8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0;}}
+.row-metrics{{display:flex;gap:20px;flex-shrink:0;}}
+.rm{{display:flex;flex-direction:column;align-items:flex-end;gap:1px;}}
+.rm-label{{font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-family:"DM Mono",monospace;}}
+.rm-value{{font-family:"Syne",sans-serif;font-size:14px;font-weight:700;line-height:1;}}
+.rm-value.great{{color:var(--green);}} .rm-value.good{{color:#a3e635;}} .rm-value.ok{{color:var(--amber);}}
+.row-chevron{{flex-shrink:0;color:var(--muted);transition:transform .2s;}}
 .row-card.open .row-chevron{{transform:rotate(180deg);}}
 
-/* Expand panel */
-.row-expand{{display:none;border-top:1px solid var(--border);background:var(--surface2);}}
-.row-card.open .row-expand{{display:flex;}}
-.expand-inner{{display:flex;gap:0;width:100%;}}
-.expand-thumb{{width:280px;flex-shrink:0;aspect-ratio:16/9;overflow:hidden;position:relative;background:var(--bg);}}
-.expand-thumb img{{width:100%;height:100%;object-fit:cover;display:block;}}
-.no-thumb-sm{{display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-size:20px;color:var(--muted);}}
-.expand-details{{flex:1;padding:16px 20px;display:flex;flex-direction:column;gap:10px;min-width:0;}}
-.expand-row{{display:flex;gap:24px;flex-wrap:wrap;}}
-.expand-field{{display:flex;flex-direction:column;gap:2px;}}
-.expand-label{{font-family:"DM Mono",monospace;font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);}}
-.expand-value{{font-size:12px;color:var(--white);font-family:"DM Mono",monospace;}}
-.expand-value a{{color:var(--gold);text-decoration:none;}}
-.expand-value a:hover{{text-decoration:underline;}}
-.fb-btn{{display:inline-flex;align-items:center;gap:5px;background:rgba(96,165,250,.1);border:1px solid rgba(96,165,250,.25);border-radius:6px;padding:5px 12px;font-family:"DM Mono",monospace;font-size:10px;color:var(--blue);text-decoration:none;transition:all .2s;width:fit-content;}}
+/* Expanded area */
+.row-expand{{display:none;border-top:1px solid var(--border);}}
+.row-card.open .row-expand{{display:block;}}
+.expand-inner{{display:grid;grid-template-columns:280px 1fr;gap:0;}}
+.expand-thumb{{background:var(--surface2);position:relative;}}
+.expand-thumb img{{width:100%;height:100%;object-fit:cover;display:block;max-height:200px;}}
+.no-thumb-sm{{display:flex;align-items:center;justify-content:center;height:160px;color:var(--muted);font-family:"DM Mono",monospace;font-size:11px;flex-direction:column;gap:6px;}}
+.expand-details{{padding:16px 20px;display:flex;flex-direction:column;gap:12px;}}
+.detail-row{{display:flex;gap:24px;flex-wrap:wrap;}}
+.dg{{display:flex;flex-direction:column;gap:3px;}}
+.dl{{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-family:"DM Mono",monospace;}}
+.dv{{font-size:12px;color:var(--white);}}
+.dv a{{color:var(--gold);text-decoration:none;font-family:"DM Mono",monospace;font-size:11px;}}
+.dv a:hover{{text-decoration:underline;}}
+.expand-actions{{display:flex;gap:8px;margin-top:4px;}}
+.fb-btn{{display:inline-flex;align-items:center;gap:5px;background:rgba(96,165,250,.1);border:1px solid rgba(96,165,250,.3);border-radius:6px;padding:5px 12px;font-family:"DM Mono",monospace;font-size:11px;color:var(--blue);text-decoration:none;transition:all .2s;}}
 .fb-btn:hover{{background:rgba(96,165,250,.2);}}
+.lp-btn{{display:inline-flex;align-items:center;gap:5px;background:rgba(232,180,80,.1);border:1px solid rgba(232,180,80,.3);border-radius:6px;padding:5px 12px;font-family:"DM Mono",monospace;font-size:11px;color:var(--gold);text-decoration:none;transition:all .2s;}}
+.lp-btn:hover{{background:rgba(232,180,80,.2);}}
 
-/* Empty */
-.empty{{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 40px;text-align:center;border:1px dashed var(--border);border-radius:9px;}}
-.empty .e-icon{{font-size:32px;margin-bottom:10px;}}
-.empty h3{{font-family:"Syne",sans-serif;font-size:18px;font-weight:700;margin-bottom:4px;}}
+.empty{{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px;text-align:center;border:1px dashed var(--border);border-radius:10px;}}
+.empty h3{{font-family:"Syne",sans-serif;font-size:18px;font-weight:700;margin-bottom:6px;}}
 .empty p{{font-family:"DM Mono",monospace;font-size:11px;color:var(--muted);}}
 
-@keyframes fadeIn{{from{{opacity:0;transform:translateY(4px)}}to{{opacity:1;transform:translateY(0)}}}}
-@media(max-width:900px){{
-  .header{{padding:12px;}} .main{{padding:12px;}}
+@keyframes fadeUp{{from{{opacity:0;transform:translateY(6px)}}to{{opacity:1;transform:translateY(0)}}}}
+@media(max-width:768px){{
+  .header{{padding:12px 16px;}} .main{{padding:12px 16px;}}
   .stats-row{{grid-template-columns:repeat(3,1fr);}}
-  .table-header{{display:none;}}
-  .row-main{{grid-template-columns:20px 60px 1fr 60px 36px;}}
-  .row-tier,.row-type,.row-note,.row-metric:not(:first-of-type){{display:none;}}
+  .row-metrics{{display:none;}}
+  .expand-inner{{grid-template-columns:1fr;}}
 }}
 </style>
 </head>
@@ -346,37 +324,36 @@ body::before{{content:"";position:fixed;inset:0;background-image:url("data:image
       <input type="date" class="date-input" id="dateFrom">
       <span class="sep">→</span>
       <input type="date" class="date-input" id="dateTo">
-      <button class="fetch-btn" onclick="applyFilters()">Apply ↵</button>
+      <button class="fetch-btn" onclick="applyFilters()">Fetch</button>
     </div>
-    <div class="vdivider"></div>
+    <div class="divider"></div>
     <div class="filter-group">
       <span class="filter-label">Status</span>
       <div class="pill-group">
-        <button class="pill active" data-filter="status" data-val="all" onclick="setPill(this,'status')">All</button>
-        <button class="pill action-pill" data-filter="status" data-val="untagged" onclick="setPill(this,'status')">🔴 Action</button>
-        <button class="pill tagged-pill" data-filter="status" data-val="tagged" onclick="setPill(this,'status')">✅ Tagged</button>
+        <button class="pill active" data-f="status" data-v="all" onclick="setPill(this,'status')">All</button>
+        <button class="pill ap" data-f="status" data-v="untagged" onclick="setPill(this,'status')">🔴 Action</button>
+        <button class="pill tp" data-f="status" data-v="tagged" onclick="setPill(this,'status')">✅ Tagged</button>
       </div>
     </div>
-    <div class="vdivider"></div>
+    <div class="divider"></div>
     <div class="filter-group">
       <span class="filter-label">Format</span>
       <div class="pill-group">
-        <button class="pill active" data-filter="type" data-val="all" onclick="setPill(this,'type')">All</button>
-        <button class="pill" data-filter="type" data-val="KOL UGC" onclick="setPill(this,'type')">KOL UGC</button>
-        <button class="pill" data-filter="type" data-val="Static" onclick="setPill(this,'type')">Static</button>
-        <button class="pill" data-filter="type" data-val="Video" onclick="setPill(this,'type')">Video</button>
-        <button class="pill" data-filter="type" data-val="IG Post" onclick="setPill(this,'type')">IG Post</button>
-        <button class="pill" data-filter="type" data-val="Creator UGC" onclick="setPill(this,'type')">Creator</button>
+        <button class="pill active" data-f="type" data-v="all" onclick="setPill(this,'type')">All</button>
+        <button class="pill" data-f="type" data-v="KOL UGC" onclick="setPill(this,'type')">KOL UGC</button>
+        <button class="pill" data-f="type" data-v="Static" onclick="setPill(this,'type')">Static</button>
+        <button class="pill" data-f="type" data-v="Video" onclick="setPill(this,'type')">Video</button>
+        <button class="pill" data-f="type" data-v="IG Post" onclick="setPill(this,'type')">IG Post</button>
+        <button class="pill" data-f="type" data-v="Creator UGC" onclick="setPill(this,'type')">Creator UGC</button>
       </div>
     </div>
-    <div class="vdivider"></div>
+    <div class="divider"></div>
     <div class="filter-group">
       <span class="filter-label">Tier</span>
       <div class="pill-group">
-        <button class="pill active" data-filter="tier" data-val="all" onclick="setPill(this,'tier')">All</button>
-        <button class="pill" data-filter="tier" data-val="L1" onclick="setPill(this,'tier')">L1</button>
-        <button class="pill" data-filter="tier" data-val="L2" onclick="setPill(this,'tier')">L2</button>
-        <button class="pill" data-filter="tier" data-val="L3" onclick="setPill(this,'tier')">L3</button>
+        <button class="pill active" data-f="tier" data-v="all" onclick="setPill(this,'tier')">All</button>
+        <button class="pill" data-f="tier" data-v="L1" onclick="setPill(this,'tier')">L1</button>
+        <button class="pill" data-f="tier" data-v="L3" onclick="setPill(this,'tier')">L3</button>
       </div>
     </div>
     <div class="results-count" id="resultsCount"></div>
@@ -385,19 +362,7 @@ body::before{{content:"";position:fixed;inset:0;background-image:url("data:image
 
 <div class="main">
   <div class="stats-row" id="statsRow"></div>
-  <div class="table-header">
-    <div class="th"></div>
-    <div class="th">Tier</div>
-    <div class="th">Format</div>
-    <div class="th">Ad Name</div>
-    <div class="th" style="text-align:right">ROAS</div>
-    <div class="th" style="text-align:right">Purchases</div>
-    <div class="th" style="text-align:right">Spend</div>
-    <div class="th" style="text-align:right">Revenue</div>
-    <div class="th">Action</div>
-    <div class="th"></div>
-  </div>
-  <div class="rows" id="rowsContainer"></div>
+  <div class="rows-list" id="rowsList"></div>
 </div>
 </div>
 
@@ -412,15 +377,14 @@ document.getElementById('dateTo').value   = DATE_END;
 const state = {{ status:'all', type:'all', tier:'all' }};
 
 function setPill(btn, group) {{
-  document.querySelectorAll(`[data-filter="${{group}}"]`).forEach(b => b.classList.remove('active'));
+  document.querySelectorAll(`[data-f="${{group}}"]`).forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  state[group] = btn.dataset.val;
-  applyFilters();
+  state[group] = btn.dataset.v;
 }}
 
 function applyFilters() {{
-  const from = document.getElementById('dateFrom').value || DATE_START;
-  const to   = document.getElementById('dateTo').value   || DATE_END;
+  const from = document.getElementById('dateFrom').value;
+  const to   = document.getElementById('dateTo').value;
 
   let filtered = ALL_ADS.filter(ad => {{
     if (state.status === 'untagged' && ad.tagged)  return false;
@@ -436,74 +400,74 @@ function applyFilters() {{
 }}
 
 function renderStats(ads) {{
-  const untagged = ads.filter(a=>!a.tagged).length;
-  const tagged   = ads.filter(a=>a.tagged).length;
-  const avgRoas  = ads.length ? (ads.reduce((s,a)=>s+a.roas,0)/ads.length).toFixed(2) : '—';
-  const totalRev = ads.reduce((s,a)=>s+a.revenue,0);
-  const totalP   = ads.reduce((s,a)=>s+a.purchases,0);
+  const untagged  = ads.filter(a=>!a.tagged).length;
+  const tagged    = ads.filter(a=>a.tagged).length;
+  const avgRoas   = ads.length ? (ads.reduce((s,a)=>s+a.roas,0)/ads.length).toFixed(2) : '—';
+  const totalRev  = ads.reduce((s,a)=>s+a.revenue,0);
+  const totalP    = ads.reduce((s,a)=>s+a.purchases,0);
   document.getElementById('statsRow').innerHTML = [
     {{l:'Needs Action', v:untagged, c:'var(--amber)'}},
-    {{l:'Already Tagged', v:tagged, c:'var(--green)'}},
-    {{l:'Avg ROAS', v:avgRoas+'x', c:'var(--gold)'}},
-    {{l:'Total Purchases', v:totalP.toLocaleString(), c:'var(--white)'}},
-    {{l:'Revenue', v:totalRev>0?'$'+totalRev.toLocaleString('en-US',{{maximumFractionDigits:0}}):'—', c:'var(--green)'}},
+    {{l:'Already Tagged', v:tagged,  c:'var(--green)'}},
+    {{l:'Avg ROAS',       v:avgRoas+'x', c:'var(--gold)'}},
+    {{l:'Total Purchases',v:totalP.toLocaleString(), c:'var(--white)'}},
+    {{l:'Revenue',        v:totalRev>0?'$'+totalRev.toLocaleString('en-US',{{maximumFractionDigits:0}}):'—', c:'var(--green)'}},
   ].map(s=>`<div class="stat"><div class="stat-label">${{s.l}}</div><div class="stat-value" style="color:${{s.c}}">${{s.v}}</div></div>`).join('');
 }}
 
-function roasCls(r) {{ return r>=2?'great':r>=1.5?'good':r>=1?'ok':'muted'; }}
-function fmtUsd(v) {{ return v>0?'$'+v.toLocaleString('en-US',{{maximumFractionDigits:0}}):' —'; }}
+function rc(r) {{ return r>=2?'great':r>=1.5?'good':'ok'; }}
 
 function buildRow(ad, idx) {{
   const nt = ad.note_type || 'generic';
   const isTagged = ad.tagged;
-  const statusClass = isTagged ? 'done' : 'action';
-  const cardClass = isTagged ? 'tagged' : 'untagged';
 
-  const thumb = ad.thumbnail
-    ? `<img src="${{ad.thumbnail}}" alt="" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\"no-thumb-sm\\">📷</div>'">`
-    : `<div class="no-thumb-sm">📷</div>`;
+  // thumb
+  const thumbHTML = ad.thumbnail
+    ? `<img src="${{ad.thumbnail}}" alt="" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\"no-thumb-sm\\"><span>📷</span><span>No preview</span></div>'">`
+    : `<div class="no-thumb-sm"><span>📷</span><span>No preview</span></div>`;
 
+  // action buttons
   const fbBtn = ad.fb_link
-    ? `<a class="fb-btn" href="${{ad.fb_link}}" target="_blank" onclick="event.stopPropagation()">
-        <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-        View on Facebook
-      </a>`
-    : '<span style="font-family:\'DM Mono\',monospace;font-size:10px;color:var(--muted)">No post link</span>';
+    ? `<a class="fb-btn" href="${{ad.fb_link}}" target="_blank" onclick="event.stopPropagation()"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg> View Post</a>`
+    : '';
+  const lpBtn = ad.lp
+    ? `<a class="lp-btn" href="${{ad.lp}}" target="_blank" onclick="event.stopPropagation()">↗ Landing Page</a>`
+    : '';
 
-  const noteLabel = nt==='icp' ? 'Tag only' : 'Dupe to pool';
-
-  return `<div class="row-card ${{cardClass}}" style="animation-delay:${{Math.min(idx,30)*.02}}s" id="row-${{idx}}">
-    <div class="row-main" onclick="toggleRow(${{idx}})">
-      <div class="row-status"><div class="status-dot ${{statusClass}}"></div></div>
-      <div class="row-tier"><span class="tier-badge tier-${{ad.tier}}">${{ad.tier}}</span></div>
-      <div class="row-type"><span class="type-badge ${{nt}}">${{ad.ad_type}}</span></div>
-      <div class="row-name">
-        <div class="ad-name-text" title="${{ad.ad_name}}">${{ad.ad_name}}</div>
-        <div class="ad-adset">${{ad.adset_name}}</div>
+  return `<div class="row-card ${{isTagged?'tagged-row':'untagged-row'}}" onclick="toggleRow(this)">
+    <div class="row-main">
+      <div class="row-status"><div class="status-dot ${{isTagged?'tagged':'action'}}"></div></div>
+      <div class="row-badges">
+        <span class="rb tier-${{ad.tier}}">${{ad.tier}}</span>
+        <span class="rb ${{nt}}">${{ad.ad_type}}</span>
       </div>
-      <div class="row-metric"><span class="metric-val ${{roasCls(ad.roas)}}">${{ad.roas.toFixed(2)}}x</span></div>
-      <div class="row-metric"><span class="metric-val">${{ad.purchases}}</span></div>
-      <div class="row-metric"><span class="metric-val muted">${{fmtUsd(ad.spend)}}</span></div>
-      <div class="row-metric"><span class="metric-val" style="color:var(--green);font-size:12px">${{fmtUsd(ad.revenue)}}</span></div>
-      <div class="row-note"><span class="note-badge ${{nt}}">${{isTagged ? '✅ Tagged' : '⚡ ' + noteLabel}}</span></div>
-      <div class="row-chevron">
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 4l4 4 4-4"/></svg>
+      <div class="row-name" title="${{ad.ad_name}}">${{ad.ad_name}}</div>
+      <div class="row-metrics">
+        <div class="rm"><div class="rm-label">ROAS</div><div class="rm-value ${{rc(ad.roas)}}">${{ad.roas.toFixed(2)}}x</div></div>
+        <div class="rm"><div class="rm-label">P</div><div class="rm-value">${{ad.purchases}}</div></div>
+        <div class="rm"><div class="rm-label">Spend</div><div class="rm-value" style="font-size:12px;color:var(--amber)">${{ad.spend>0?'$'+ad.spend.toLocaleString('en-US',{{maximumFractionDigits:0}}):' —'}}</div></div>
+        <div class="rm"><div class="rm-label">Rev</div><div class="rm-value" style="font-size:12px;color:var(--green)">${{ad.revenue>0?'$'+ad.revenue.toLocaleString('en-US',{{maximumFractionDigits:0}}):' —'}}</div></div>
       </div>
+      <svg class="row-chevron" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 5l5 5 5-5"/></svg>
     </div>
     <div class="row-expand">
       <div class="expand-inner">
-        <div class="expand-thumb">${{thumb}}</div>
+        <div class="expand-thumb">${{thumbHTML}}</div>
         <div class="expand-details">
-          <div class="expand-row">
-            <div class="expand-field"><div class="expand-label">Campaign</div><div class="expand-value">${{ad.campaign_name}}</div></div>
+          <div class="detail-row">
+            <div class="dg"><div class="dl">Campaign</div><div class="dv">${{ad.campaign_name}}</div></div>
           </div>
-          <div class="expand-row">
-            <div class="expand-field"><div class="expand-label">CPA</div><div class="expand-value">${{fmtUsd(ad.cpa)}}</div></div>
-            <div class="expand-field"><div class="expand-label">CTR</div><div class="expand-value">${{ad.ctr}}%</div></div>
-            <div class="expand-field"><div class="expand-label">Landing Page</div><div class="expand-value"><a href="${{ad.lp}}" target="_blank">${{ad.lp||'—'}}</a></div></div>
+          <div class="detail-row">
+            <div class="dg"><div class="dl">Ad Set</div><div class="dv">${{ad.adset_name}}</div></div>
           </div>
-          <div class="expand-row">
+          <div class="detail-row">
+            <div class="dg"><div class="dl">Action</div><div class="dv" style="color:${{nt==='icp'?'var(--purple)':nt==='kol'?'var(--teal)':'var(--gold)}}">${{ad.note}}</div></div>
+            <div class="dg"><div class="dl">Status</div><div class="dv" style="color:${{isTagged?'var(--green)':'var(--amber)}}">${{isTagged?'✅ WIN Tagged':'⚡ Needs Action'}}</div></div>
+            <div class="dg"><div class="dl">CPA</div><div class="dv">${{ad.cpa>0?'$'+ad.cpa.toFixed(2):'—'}}</div></div>
+            <div class="dg"><div class="dl">CTR</div><div class="dv">${{ad.ctr>0?ad.ctr+'%':'—'}}</div></div>
+          </div>
+          <div class="expand-actions">
             ${{fbBtn}}
+            ${{lpBtn}}
           </div>
         </div>
       </div>
@@ -512,24 +476,31 @@ function buildRow(ad, idx) {{
 }}
 
 function renderRows(ads) {{
-  const container = document.getElementById('rowsContainer');
+  const list = document.getElementById('rowsList');
   if (!ads.length) {{
-    container.innerHTML = `<div class="empty"><div class="e-icon">🔍</div><h3>No ads match</h3><p>Try adjusting the filters or date range</p></div>`;
+    list.innerHTML = `<div class="empty"><h3>No ads match</h3><p>Try adjusting the filters or date range, then hit Fetch</p></div>`;
     return;
   }}
   const sorted = [...ads.filter(a=>!a.tagged), ...ads.filter(a=>a.tagged)];
-  container.innerHTML = sorted.map((a,i) => buildRow(a,i)).join('');
+  list.innerHTML = sorted.map((a,i) => buildRow(a,i)).join('');
 }}
 
-function toggleRow(idx) {{
-  const card = document.getElementById('row-'+idx);
-  card.classList.toggle('open');
+function toggleRow(row) {{
+  // close others
+  document.querySelectorAll('.row-card.open').forEach(r => {{ if(r!==row) r.classList.remove('open'); }});
+  row.classList.toggle('open');
+  if (row.classList.contains('open')) {{
+    row.scrollIntoView({{ behavior:'smooth', block:'nearest' }});
+  }}
 }}
 
+// Initial render
 applyFilters();
 </script>
 </body>
 </html>'''
+
+
 
 if __name__ == '__main__':
     if not ACCESS_TOKEN:
@@ -539,7 +510,7 @@ if __name__ == '__main__':
     ads = [parse_ad(a) for a in ads_raw]
     classified = classify_ads(ads)
 
-    print(f"Fetching creatives for {len(classified)} ads...")
+    print(f"Fetching creatives for {len(classified)} qualifying ads...")
     all_ids = list(set(a['ad_id'] for a in classified if a.get('ad_id')))
     creatives = fetch_creatives(all_ids)
     for a in classified:
