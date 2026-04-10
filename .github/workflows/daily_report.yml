@@ -1,8 +1,11 @@
-name: Daily Winners Report
+name: Winners Report
 
 on:
   schedule:
-    - cron: '0 1 * * *'
+    # Monday 9am MYT (UTC+8 = 01:00 UTC)
+    - cron: '0 1 * * 1'
+    # Friday 9am MYT
+    - cron: '0 1 * * 5'
   workflow_dispatch:
 
 jobs:
@@ -23,10 +26,10 @@ jobs:
           META_ACCESS_TOKEN: ${{ secrets.META_ACCESS_TOKEN }}
         run: python fetch_winners.py
 
-      - name: Commit and push updated report
+      - name: Commit and push report + previous winners
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add index.html
-          git diff --staged --quiet || git commit -m "Auto-update winners report $(date +'%Y-%m-%d')"
+          git add index.html previous_winners.json
+          git diff --staged --quiet || git commit -m "Winners report $(date +'%A %-d %b %Y')"
           git push
