@@ -320,14 +320,6 @@ body::before{{content:"";position:fixed;inset:0;background-image:url("data:image
   </div>
   <div class="filters">
     <div class="filter-group">
-      <span class="filter-label">Date</span>
-      <input type="date" class="date-input" id="dateFrom">
-      <span class="sep">→</span>
-      <input type="date" class="date-input" id="dateTo">
-      <button class="fetch-btn" onclick="applyFilters()">Fetch</button>
-    </div>
-    <div class="divider"></div>
-    <div class="filter-group">
       <span class="filter-label">Status</span>
       <div class="pill-group">
         <button class="pill active" data-f="status" data-v="all" onclick="setPill(this,'status')">All</button>
@@ -380,6 +372,7 @@ function setPill(btn, group) {{
   document.querySelectorAll(`[data-f="${{group}}"]`).forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   state[group] = btn.dataset.v;
+  applyFilters();
 }}
 
 function applyFilters() {{
